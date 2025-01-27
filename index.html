@@ -410,6 +410,7 @@
 
 if (window.Telegram.WebApp) {
   toggleLoading(true);
+  const Telegram = window.Telegram.WebApp;
   const user = Telegram.WebApp.initDataUnsafe.user;
   const UserUsername = user.username;
   const UserName = user.first_name;
