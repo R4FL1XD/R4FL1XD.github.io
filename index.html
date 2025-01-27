@@ -1,54 +1,28 @@
-
-
-
-
 <!DOCTYPE html>
 
 <html lang="en">
 
-<head>
-
-    
+  <head><head>
 
     <meta charset="UTF-8">
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>MONETAG  SELF CLICK BY BX..</title>
-
-    
-
-   
-
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-
-    
-
-    
-
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
-
-    
-
-  
-
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
-
-    
-
-    
-
-<script src='//whephiwums.com/vignette.min.js' data-zone='8859453' data-sdk='show_8859453'></script>
-
-
-
-    <!-- POWER BY MR PERFECT -->
-
-
+    <title>Ad Reward System</title>
 
     <style>
 
         body {
+
+            margin: 0;
+
+            padding: 0;
+
+            background-color: #121212;
+
+            color: #fff;
+
+            font-family: Arial, sans-serif;
 
             display: flex;
 
@@ -56,11 +30,7 @@
 
             align-items: center;
 
-            min-height: 100vh;
-
-            background-color: #f5f5f5;
-
-            font-family: 'Arial', sans-serif;
+            height: 100vh;
 
         }
 
@@ -68,230 +38,530 @@
 
             text-align: center;
 
-            background-color: #fff;
+            background: #1f1f1f;
 
-            padding: 40px;
-
-            border-radius: 15px;
-
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
-
-            width: 90%;
-
-            max-width: 500px;
-
-        }
-
-        h2 {
-
-            font-size: 2rem;
-
-            margin-bottom: 30px;
-
-        }
-
-        .btn {
-
-            font-size: 1.2rem;
-
-            padding: 12px 30px;
-
-            margin: 10px;
+            padding: 20px;
 
             border-radius: 10px;
 
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
 
-            transition: all 0.3s ease;
+            width: 300px;
 
         }
 
-        .btn-primary {
+        .container h1 {
 
-            background-color: #007bff;
+            font-size: 20px;
+
+            color: green;
+
+            margin-bottom: 10px;
+
+        }
+
+        .developer {
+
+            font-size: 12px;
+
+            background-color: green;
+
+            padding: 5px 10px;
+
+            border-radius: 5px;
+
+            margin-bottom: 15px;
+
+            display: inline-block;
+
+            cursor: pointer;
+
+        }
+
+        .stats {
+
+            margin: 10px 0;
+
+        }
+
+        .stats p {
+
+            margin: 5px 0;
+
+            font-size: 14px;
+
+        }
+
+        .progress-circle {
+
+            width: 80px;
+
+            height: 80px;
+
+            border: 4px solid green;
+
+            border-radius: 50%;
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            margin: 10px auto;
+
+        }
+
+        .progress-circle span {
+
+            font-size: 18px;
+
+            font-weight: bold;
+
+        }
+
+        .buttons button {
+
+            width: 90%;
+
+            margin: 5px 0;
+
+            padding: 10px;
+
+            font-size: 14px;
 
             border: none;
 
-        }
+            border-radius: 5px;
 
-        .btn-primary:hover {
+            color: white;
 
-            background-color: #0056b3;
+            background: green;
 
-            transform: translateY(-5px);
-
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
 
         }
 
-        .btn-success {
+        .buttons button:hover {
 
-            background-color: #28a745;
-
-            border: none;
+            background: darkorange;
 
         }
 
-        .btn-success:hover {
+        .withdraw-section {
 
-            background-color: #218838;
+            margin-top: 20px;
 
-            transform: translateY(-5px);
+            display: none;
 
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            padding: 20px;
 
-        }
+            background-color: #2a2a2a;
 
-        .btn-warning {
+            border-radius: 10px;
 
-            background-color: #ffc107;
-
-            border: none;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
 
         }
 
-        .btn-red {
+        .withdraw-section input, .withdraw-section select {
 
-            background-color: #F44336;
+            width: 100%;
 
-            color: #ffffff;
+            padding: 12px;
 
-            border: none;
+            margin: 8px 0;
+
+            border-radius: 5px;
+
+            border: 2px solid #555;
+
+            background-color: #333;
+
+            color: #fff;
 
         }
 
-        .btn-warning:hover {
+        .withdraw-section input:focus, .withdraw-section select:focus {
 
-            background-color: #e0a800;
+            border-color: green;
 
-            transform: translateY(-5px);
+            outline: none;
 
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .withdraw-section button {
+
+            background-color: green;
+
+            width: 100%;
+
+            padding: 12px;
+
+            font-size: 16px;
+
+            margin-top: 15px;
+
+            border-radius: 5px;
+
+            cursor: pointer;
+
+        }
+
+        .withdraw-section button:hover {
+
+            background-color: #006400;
+
+        }
+
+        #withdraw-status {
+
+            color: red;
+
+            font-size: 14px;
+
+            margin-top: 10px;
+
+        }
+
+        .user-info {
+
+            margin: 10px 0;
+
+        }
+
+        .user-info p {
+
+            font-size: 14px;
+
+            margin: 5px 0;
 
         }
 
     </style>
 
-</head>
+<link rel="me" href="https://www.blogger.com/profile/12615525391666988711">
+
+<meta name="google-adsense-platform-account" content="ca-host-pub-1556223355139109">
+
+<meta name="google-adsense-platform-domain" content="blogspot.com">
+
+<script async="" src="https://tzegilo.com/stattag.js"></script></head></head>
 
 <body>
 
+  <body data-new-gr-c-s-check-loaded="14.1209.0" data-gr-ext-installed="">
+
+    <div class="container">
+
+        <h1>Auto MoneTag Ads</h1>
+
+        <div class="developer" onclick="window.location.href='https://t.me/imam2ul1'">Developer by Md Imamul Hawlader</div>
+
+        
+
+        <!-- Display User Info -->
+
+        <div class="user-info">
+
+            <p>welcome, <span id="user-name">@exampleUser</span></p>
+
+        </div>
 
 
-<div class="container animate__animated animate__fadeIn">
 
-    
+        <div class="stats">
 
- 
+            <p>Watched Ads: <span id="watched-ads">3</span></p>
 
-    <h2>Watch Ads and Earn Rewards!</h2>
+            <p>Earned Points: <span id="earned-points">1.50</span></p>
 
-    <div>
+        </div>
 
-        <button id="showAdButton1" class="btn btn-primary">Show Ad 1</button>
+        <div class="progress-circle">
 
-        <button id="showAdButton2" class="btn btn-success">Show Ad 2</button>
+            <span id="ads-progress">0%</span>
 
-        <button id="showAdButton3" class="btn btn-warning">Show Ad 3</button>
+        </div>
 
-        <button id="showAdButton4" class="btn btn-red">Show Ad 4</button>
+        <div class="buttons">
+
+            <button id="watch-ad-btn" onclick="watchAd()">Watch Ad</button>
+
+            <button id="auto-ad-btn" onclick="startAutoAds()">Auto Show Ads</button>
+
+            <button id="stop-auto-btn" onclick="stopAutoAds()">Stop Auto Ads</button>
+
+            <button id="withdraw-btn" onclick="showWithdrawForm()">Withdraw</button>
+
+        </div>
+
+
+
+        <!-- Withdraw Section -->
+
+        <div class="withdraw-section" id="withdraw-section">
+
+            <h3 style="color: orange; margin-bottom: 15px;">Withdrawal Request</h3>
+
+            <input type="number" id="withdraw-amount" placeholder="Enter Points to Withdraw">
+
+            <select id="payment-method">
+
+                <option value="bkash">Bkash</option>
+
+                <option value="nagad">Nagad</option>
+
+                <option value="manual">Manual</option>
+
+            </select>
+
+            <input type="text" id="withdraw-phone" placeholder="Enter Phone Number">
+
+            <button onclick="withdrawPoints()">Withdraw</button>
+
+            <p id="withdraw-status"></p>
+
+        </div>
 
     </div>
 
-    <script type="text/javascript">
 
-	atOptions = {
 
-		'key' : 'b6a638c04543878bcc4514278c855cf7',
-
-		'format' : 'iframe',
-
-		'height' : 50,
-
-		'width' : 320,
-
-		'params' : {}
-
-	};
-
-</script>
+    <script src='//whephiwums.com/vignette.min.js' data-zone='8834971' data-sdk='show_8834971'></script>
 
 
 
-</div>
+    <script>
+
+        const MIN_WITHDRAW_POINTS = 5;
+
+        const ADMIN_USER_ID = 6665642603;
+
+        const BOT_TOKEN = "7683947495:AAGPD48acL8UbbZPKc6Qb8Z-L6gJUwb4pIc";
+
+        let watchedAdsCount = 0;
+
+        let earnedPoints = 0.00;
+
+        let autoAdInterval;
 
 
 
-<!-- Bootstrap JS and dependencies -->
+        // Simulate user name from Telegram User ID (replace with actual logic to get user info)
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        const telegramUserName = "@exampleUser"; // Replace this line with the actual logic to fetch username
 
-
-
-<!-- Toastr JS CDN -->
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+        document.getElementById("user-name").textContent = telegramUserName;
 
 
 
-<script>
+        // Check if user data is saved in localStorage
 
-  <script src='//whephiwums.com/vignette.min.js' data-zone='8859453' data-sdk='show_8859453'></script>
+        if (localStorage.getItem('watchedAdsCount')) {
 
-  
+            watchedAdsCount = parseInt(localStorage.getItem('watchedAdsCount'));
 
-    function showAd(buttonId) {
+            earnedPoints = parseFloat(localStorage.getItem('earnedPoints'));
 
-        show_8859453().then(() => {
+            document.getElementById('watched-ads').textContent = watchedAdsCount;
 
-            // Reward function
+            document.getElementById('earned-points').textContent = earnedPoints.toFixed(2);
 
-            toastr.success(`You have watched the ad on ${buttonId} and earned a reward!`, 'Congratulations');
-
-        }).catch((error) => {
-
-            toastr.error('There was an error displaying the ad.', 'Error');
-
-            console.error(error);
-
-        });
-
-    }
+        }
 
 
 
-    document.getElementById('showAdButton1').addEventListener('click', function() {
+        // Function to watch an ad and update stats
 
-        showAd('Show Ad 1');
+        function watchAd() {
 
-    });
+            if (typeof show_8834971 === 'function') {
+
+                show_8834971().then(() => {
+
+                    // When the ad is shown, we add points
+
+                    watchedAdsCount++;
+
+                    document.getElementById('watched-ads').textContent = watchedAdsCount;
+
+                    earnedPoints += 0.50; // Add 0.50 points per ad watched
+
+                    document.getElementById('earned-points').textContent = earnedPoints.toFixed(2);
+
+                    localStorage.setItem('watchedAdsCount', watchedAdsCount);
+
+                    localStorage.setItem('earnedPoints', earnedPoints.toFixed(2));
 
 
 
-    document.getElementById('showAdButton2').addEventListener('click', function() {
+                    // Update progress circle
 
-        showAd('Show Ad 2');
+                    updateProgressCircle();
 
-    });
+                });
+
+            }
+
+        }
 
 
 
-    document.getElementById('showAdButton3').addEventListener('click', function() {
+        // Update progress circle based on watched ads
 
-        showAd('Show Ad 3');
+        function updateProgressCircle() {
 
-    });
+            const percentage = (watchedAdsCount / 10) * 100;
 
-    document.getElementById('showAdButton4').addEventListener('click', function() {
+            document.getElementById('ads-progress').textContent = `${percentage}%`;
 
-        showAd('Show Ad 4');
+        }
 
-    });
 
-</script>
+
+        // Function to start auto showing ads
+
+        function startAutoAds() {
+
+            autoAdInterval = setInterval(watchAd, 5000); // Auto show ad every 5 seconds
+
+            document.getElementById('auto-ad-btn').disabled = true;
+
+            document.getElementById('stop-auto-btn').disabled = false;
+
+        }
+
+
+
+        // Function to stop auto ads
+
+        function stopAutoAds() {
+
+            clearInterval(autoAdInterval);
+
+            document.getElementById('auto-ad-btn').disabled = false;
+
+            document.getElementById('stop-auto-btn').disabled = true;
+
+        }
+
+
+
+        // Function to show withdraw form
+
+        function showWithdrawForm() {
+
+            document.getElementById('withdraw-section').style.display = 'block';
+
+        }
+
+
+
+        // Function to handle withdrawal
+
+        function withdrawPoints() {
+
+            const amount = document.getElementById('withdraw-amount').value;
+
+            const paymentMethod = document.getElementById('payment-method').value;
+
+            const phoneNumber = document.getElementById('withdraw-phone').value;
+
+
+
+            if (amount < MIN_WITHDRAW_POINTS) {
+
+                document.getElementById('withdraw-status').textContent = `Minimum withdrawal amount is ${MIN_WITHDRAW_POINTS} points.`;
+
+                return;
+
+            }
+
+
+
+            if (amount > earnedPoints) {
+
+                document.getElementById('withdraw-status').textContent = `Insufficient balance. You have ${earnedPoints.toFixed(2)} points.`;
+
+                return;
+
+            }
+
+
+
+            // Subtract points from earnedPoints after successful withdrawal
+
+            earnedPoints -= parseFloat(amount);
+
+            document.getElementById('earned-points').textContent = earnedPoints.toFixed(2);
+
+
+
+            // Save the updated balance in localStorage
+
+            localStorage.setItem('earnedPoints', earnedPoints.toFixed(2));
+
+
+
+            // Send withdrawal request to admin via Telegram
+
+            const message = `Withdrawal Request from ${telegramUserName}:\nAmount: ${amount} points\nPayment Method: ${paymentMethod}\nPhone Number: ${phoneNumber}`;
+
+            sendWithdrawRequestToAdmin(message);
+
+
+
+            // Show success message
+
+            document.getElementById('withdraw-status').textContent = 'Withdrawal request sent successfully!';
+
+
+
+            // Clear form
+
+            document.getElementById('withdraw-amount').value = '';
+
+            document.getElementById('withdraw-phone').value = '';
+
+        }
+
+
+
+        // Function to send withdrawal request to admin
+
+        function sendWithdrawRequestToAdmin(message) {
+
+            fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${ADMIN_USER_ID}&text=${encodeURIComponent(message)}`)
+
+                .then(response => response.json())
+
+                .then(data => {
+
+                    if (data.ok) {
+
+                        console.log('Message sent to admin');
+
+                    }
+
+                })
+
+                .catch(error => console.error('Error sending message:', error));
+
+        }
+
+    </script>
+
+
 
 
 
 </body>
+
+  
+
+</body>
+
+   
 
 </html>
