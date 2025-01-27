@@ -408,11 +408,11 @@
   }
   
 
-function fetchUserData(userData) {
+if (window.Telegram.WebApp) {
   toggleLoading(true);
-  const user = JSON.stringify(userData);
-  const UserUsername = JSON.parse(user).username;
-  const UserName = JSON.parse(user).first_name;
+  const user = Telegram.WebApp.initDataUnsafe.user;
+  const UserUsername = user.username;
+  const UserName = user.first_name;
   const userBalance = 0;
   const tasksCompleted = 0;
   const taskCount = 250;
@@ -445,66 +445,7 @@ function fetchUserData(userData) {
 }
 
 
-  function fetchUserDa0000ta(userData) {
-    toggleLoading(true);
-    const user = JSON.stringify(userData);
-    const UserUsername = JSON.parse(user).username;
-    const UserName = JSON.parse(user).first_name;
-    const user-balance = 0;
-    const tasksCompleted = 0;
-    //adslimit
-    const taskCount = 250;
-    const today_earning = 0;
-    const totalAdsWatched = 0;
-    const lifetime_earning = 0;
-    const tasksRemaining = 0;
-    if (localStorage.getItem('UserUsername')) {
-      UserUsername = parseInt(localStorage.getItem('UserUsername'));
-      document.getElementById('UserUsername').textContent = UserUsername;
-      UserName = parseFloat(localStorage.getItem('UserName'));
-      document.getElementById('UserName').textContent = UserName;
-      user-balance = parseFloat(localStorage.getItem('user-balance'));
-      document.getElementById('user-balance').textContent = user-balance;
-      tasksCompleted = parseFloat(localStorage.getItem('tasksCompleted'));
-      document.getElementById('tasksCompleted').textContent = tasksCompleted;
-      taskCount = parseFloat(localStorage.getItem('taskCount'));
-      document.getElementById('taskCount').textContent = taskCount;
-      today_earning = parseFloat(localStorage.getItem('today_earning'));
-      document.getElementById('today_earning').textContent = today_earning;
-      totalAdsWatched = parseFloat(localStorage.getItem('totalAdsWatched'));
-      document.getElementById('totalAdsWatched').textContent = totalAdsWatched;
-      lifetime_earning = parseFloat(localStorage.getItem('lifetime_earning'));
-      document.getElementById('lifetime_earning').textContent = lifetime_earning;
-      tasksRemaining = parseFloat(localStorage.getItem('tasksRemaining'));
-      document.getElementById('tasksRemaining').textContent = tasksRemaining;
-
-      toggleLoading(false);
-    }
-    let currentUserId;
-
-    if (window.Telegram.WebApp) {
-      const user = Telegram.WebApp.initDataUnsafe.user;
-      if (user) {
-        const userData = {
-          first_name: user.first_name,
-          last_name: user.last_name,
-          username: user.username,
-          language_code: user.language_code,
-          photo_url: user.photo_url || "https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg",
-          is_premium: user.is_premium,
-          id: user.id
-        };
-
-        currentUserId = user.id;
-        fetchUserData(userData);
-
-        document.querySelectorAll(".profile-pic").forEach((img) => {
-          img.src = userData.photo_url;
-        });
-      }
-    }
-
   </script>
 
 </body>
-  </html>
+</html>
