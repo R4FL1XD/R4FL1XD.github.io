@@ -38,7 +38,7 @@
     />
     <div>
       <h3 class="mb-0 UserName" style="font-size: 1.25rem">UserName</h3>
-      <p class="mb-0 user-balance" style="font-size: 1rem; font-weight: bold">
+      <p class="mb-0 userBalance" style="font-size: 1rem; font-weight: bold">
         $ 0
       </p>
     </div>
@@ -68,8 +68,8 @@
           </p>
         </p>
         <p class="text-secondary">
-          <strong>Balance:</strong> <p class="user-balance">
-            user-balance
+          <strong>Balance:</strong> <p class="userBalance">
+            userBalance
           </p>
         </p>
       </div>
@@ -118,8 +118,8 @@
     <!-- Balance Display -->
     <div class="text-center mb-4">
       <h3 class="text-secondary">
-        <strong>Available Balance:</strong> <p class="user-balance">
-          user-balance
+        <strong>Available Balance:</strong> <p class="userBalance">
+          userBalance
         </p>
       </h3>
     </div>
@@ -192,7 +192,7 @@
       />
       <h3 class="text-primary UserName">UserName</h3>
       <p class="text-secondary">
-        <strong>Balance:</strong> <p class="user-balance">
+        <strong>Balance:</strong> <p class="userBalance">
           $100
         </p>
       </p>
@@ -406,7 +406,46 @@
     </div>
     `;
   }
-  function fetchUserData(userData) {
+  
+
+function fetchUserData(userData) {
+  toggleLoading(true);
+  const user = JSON.stringify(userData);
+  const UserUsername = JSON.parse(user).username;
+  const UserName = JSON.parse(user).first_name;
+  const userBalance = 0;
+  const tasksCompleted = 0;
+  const taskCount = 250;
+  const todayEarning = 0;
+  const totalAdsWatched = 0;
+  const lifetimeEarning = 0;
+  const tasksRemaining = 0;
+
+  if (localStorage.getItem('UserUsername')) {
+    UserUsername = localStorage.getItem('UserUsername');
+    document.getElementById('UserUsername').textContent = UserUsername;
+    UserName = localStorage.getItem('UserName');
+    document.getElementById('UserName').textContent = UserName;
+    userBalance = localStorage.getItem('userBalance');
+    document.getElementById('userBalance').textContent = userBalance;
+    tasksCompleted = parseInt(localStorage.getItem('tasksCompleted'));
+    document.getElementById('tasksCompleted').textContent = tasksCompleted;
+    taskCount = parseInt(localStorage.getItem('taskCount'));
+    document.getElementById('taskCount').textContent = taskCount;
+    todayEarning = parseFloat(localStorage.getItem('todayEarning'));
+    document.getElementById('todayEarning').textContent = todayEarning;
+    totalAdsWatched = parseInt(localStorage.getItem('totalAdsWatched'));
+    document.getElementById('totalAdsWatched').textContent = totalAdsWatched;
+    lifetimeEarning = parseFloat(localStorage.getItem('lifetimeEarning'));
+    document.getElementById('lifetimeEarning').textContent = lifetimeEarning;
+    tasksRemaining = parseInt(localStorage.getItem('tasksRemaining'));
+    document.getElementById('tasksRemaining').textContent = tasksRemaining;
+    toggleLoading(false);
+  }
+}
+
+
+  function fetchUserDa0000ta(userData) {
     toggleLoading(true);
     const user = JSON.stringify(userData);
     const UserUsername = JSON.parse(user).username;
@@ -441,7 +480,6 @@
 
       toggleLoading(false);
     }
-  }
     let currentUserId;
 
     if (window.Telegram.WebApp) {
@@ -469,4 +507,4 @@
   </script>
 
 </body>
-</html>
+  </html>
