@@ -516,6 +516,7 @@
                         earnedPoints = Math.max(earnedPoints, 0);
                         document.getElementById('dice-result').textContent = resultMessage;
                         document.getElementById('earned-points').textContent = earnedPoints;
+                        localStorage.setItem('earned-points', earnedPoints);
                         document.getElementById('roll-dice-btn').disabled = false;
                       },
                         3000);
@@ -549,6 +550,7 @@
 
                     // Update the earned points on the UI
                     document.getElementById('earned-points').textContent = earnedPoints;
+                    localStorage.setItem('earned-points', earnedPoints);
                     document.getElementById('withdraw-status').textContent = "Withdrawal request sent.";
 
                     const adminChatId = '@raflistore_24'; // Admin's Telegram chat ID
