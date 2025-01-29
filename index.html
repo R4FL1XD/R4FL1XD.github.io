@@ -362,6 +362,7 @@
                     Money Earned: <span id="earned-points">0</span>
                   </p>
                 </div>
+
                 <!--// Banner Kecil -->
                 <script type="text/javascript">
                   atOptions = {
@@ -378,9 +379,18 @@
                 <div class="withdraw-section" style="margin-top: 20px;">
                   <h3>withdraw-amount</h3>
                   <form id="withdraw-form">
-                    <input type="number" id="withdraw-amount" placeholder="Enter Points to be Withdrawn" required>
+                    <select id="withdraw-amount">
+                      <option value="500">Rp 500  (3.750.000 point)</option>
+                      <option value="1000">1000  (7.500.000 point)</option>
+                      <option value="10000">10000 (75.000.000 point )</option>
+                    </select>
                     <input type="text" id="phone-number" placeholder="Enter Fund Number" required>
-                    <input type="text" id="payment-method" placeholder="Fund Account Owner" required>
+                    <select id="payment-method">
+                      <option value="Dana">DANA</option>
+                      <option value="OVO">OVO</option>
+                      <option value="GOPAY">GOPAY</option>
+                    </select>
+
                     <button type="button" onclick="withdrawPoints()">Withdraw</button>
                   </form>
                   <p id="withdraw-status"></p>
@@ -522,28 +532,25 @@
                         3000);
                     });
                   }
-
                   function withdrawPoints() {
-                    const amount = parseInt(document.getElementById('withdraw-amount').value);
+                    const withdrawAmount = parseInt(document.getElementById('withdraw-amount').value);
                     const phoneNumber = document.getElementById('phone-number').value;
                     const paymentMethod = document.getElementById('payment-method').value;
 
-                    // Access Telegram username dynamically from WebApp data
-                    const tg = window.Telegram.WebApp;
-                    const user = tg.initDataUnsafe?.user;
-                    const telegramUsername = user ? user.username || 'No username': 'No username';
+                    let requiredPoints = 0;
+                    if (withdrawAmount == 500) {
+                      requiredPoints = 3750000;
+                    } else if (withdrawAmount == 1000) {
+                      requiredPoints = 7500000;
+                    } else if (withdrawAmount == 10000) {
+                      requiredPoints = 75000000;
+                    }
 
-                    if (
-                      isNaN(amount) ||
-                      amount < 150000 ||
-                      amount > 100000 ||
-                      amount > earnedPoints ||
-                      !phoneNumber ||
-                      !paymentMethod
-                    ) {
-                      document.getElementById('withdraw-status').textContent = "Invalid withdrawal details (Min 150k Points).";
+                    if (isNaN(withdrawAmount) || earnedPoints < requiredPoints || !phoneNumber || !paymentMethod) {
+                      document.getElementById('withdraw-status').textContent = "Invalid withdrawal details.";
                       return;
                     }
+
 
                     // Subtract the amount from earnedPoints
                     earnedPoints -= amount;
@@ -552,6 +559,11 @@
                     document.getElementById('earned-points').textContent = earnedPoints;
                     localStorage.setItem('earned-points', earnedPoints);
                     document.getElementById('withdraw-status').textContent = "Withdrawal request sent.";
+
+                    // Access Telegram username dynamically from WebApp data
+                    const tg = window.Telegram.WebApp;
+                    const user = tg.initDataUnsafe?.user;
+                    const telegramUsername = user ? user.username || 'No username': 'No username';
 
                     const adminChatId = '@raflistore_24'; // Admin's Telegram chat ID
                     const botToken = '7971014111:AAF23urpxpxjcphCJI6AM4KYWGN6lMsJ5Dc'; // Your bot's token
@@ -590,4 +602,4 @@
                 <script type='text/javascript' src='//pl25716974.profitablecpmrate.com/a2/ac/98/a2ac98fa3d31de7c7554226a6c54df81.js'></script>
                 <!--// batas sosial bar -->
 
-</body>
+  </body>
