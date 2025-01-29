@@ -5,17 +5,34 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Watch Ads Earn Rewards</title>
   <style>
+
     body {
       margin: 0;
-      padding: 0;
+      padding: 20px;
       background-color: #f8f8ff;
       color: #000;
       font-family: Arial, sans-serif;
+      font-size: 16px;
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
       flex-direction: column;
+      overflow-y: auto;
+    }
+
+    @media only screen and (max-width: 600px) {
+      body {
+        font-size: 14px;
+        padding: 10px;
+      }
+    }
+
+    @media only screen and (max-width: 400px) {
+      body {
+        font-size: 12px;
+        padding: 5px;
+      }
     }
 
     .container {
@@ -107,8 +124,13 @@
 
     #dice-result {
       font-size: 18px;
-      color: red;
+      color: #721c24;
+      background-color: #f8d7da;
+      border-color: #f5c6cb;
+      padding: 10px;
+      border-radius: 5px;
       margin-top: 10px;
+      border: 1px solid #f5c6cb;
     }
 
     .stats {
