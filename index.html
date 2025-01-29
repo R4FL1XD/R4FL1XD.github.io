@@ -347,6 +347,9 @@
       </script>
       <img id="user-photo" src="" alt="User Photo" data-pagespeed-url-hash="2250287623" onload="pagespeed.CriticalImages.checkImageForCriticality(this);" data-pagespeed-url-hash="2175071610" onload="pagespeed.CriticalImages.checkImageForCriticality(this);">
       <p id="user-name"></p>
+      <p>
+        Point <span id="earned-points">0</span>
+      </p>
     </div>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script>
@@ -416,11 +419,7 @@
       <p id="dice-result"></p>
     </div>
 
-    <div class="stats">
-      <p>
-        Money Earned: <span id="earned-points">0</span>
-      </p>
-    </div>
+
 
     <!--// Banner Kecil -->
     <script type="text/javascript">
@@ -434,9 +433,9 @@
     </script>
     <script type="text/javascript" src="//www.highperformanceformat.com/4fdff508f72353f5e340f159d71598f7/invoke.js"></script>
     <!--// Banner Kecil batas-->
-
+    <button type="button" onclick="ShowWithdrawForm()">Withdraw</button>
     <div class="withdraw-section" style="margin-top: 20px;">
-      <h3>withdraw-amount</h3>
+      <h3 style="color: orange; margin-bottom: 15px;">Withdrawal Request</h3>
       <form id="withdraw-form">
         <select id="withdraw-amount">
           <option value="500">Rp 500  =  3.750.000 point </option>
@@ -450,7 +449,7 @@
           <option value="GOPAY">GOPAY</option>
         </select>
 
-        <button type="button" onclick="withdrawPoints()">Withdraw</button>
+        <button type="button" onclick="withdrawPoints()"> Withdraw </button>
       </form>
       <p id="withdraw-status"></p>
     </div>
@@ -591,6 +590,11 @@
           3000);
       });
     }
+
+    function showWithdrawForm() {
+      document.getElementById('withdraw-section').style.display = 'block';
+    }
+
     function withdrawPoints() {
       const withdrawAmount = parseInt(document.getElementById('withdraw-amount').value);
       const phoneNumber = document.getElementById('phone-number').value;
