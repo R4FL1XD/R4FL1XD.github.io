@@ -143,16 +143,47 @@
     }
 
     .user-info {
-      text-align: center;
-      /* Pusatkan konten */
-      font-family: Arial, sans-serif;
-      /* Gunakan font yang konsisten */
+      display: flex;
+      align-items: center;
+      background-color: #f9f9f9;
+      border-radius: 10px;
+      padding: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 400px;
+      margin: 20px auto;
     }
 
+
     .user-info-top {
-      margin-bottom: 20px;
-      /* Berikan jarak di bagian bawah */
+      display: flex;
+      flex-direction: column;
+      /* Menyusun elemen dalam kolom */
+      align-items: flex-start;
+      /* Menyelaraskan elemen ke kiri */
     }
+    #user-photo {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-right: 15px;
+      border: 2px solid #48d1cc;
+    }
+
+    #user-name {
+      font-size: 16px;
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 5px;
+      /* Memberi jarak antara nama dan poin */
+    }
+
+    #poin {
+      font-size: 14px;
+      color: #666;
+    }
+
 
     #user-photo {
       width: 100px;
@@ -165,32 +196,7 @@
       /* Jarak di bawah foto */
     }
 
-    #user-name {
-      font-size: 18px;
-      /* Ukuran font untuk nama pengguna */
-      font-weight: bold;
-      /* Teks tebal */
-      margin-bottom: 5px;
-      /* Jarak di bawah nama pengguna */
-    }
 
-    #poin {
-      font-size: 16px;
-      /* Ukuran font untuk teks "Point" */
-      color: #333;
-      /* Warna teks */
-      margin-top: 0;
-      /* Hilangkan margin atas */
-      margin-bottom: 10px;
-      /* Jarak di bawah poin */
-    }
-
-    #earned-points {
-      font-weight: bold;
-      /* Teks tebal untuk angka poin */
-      color: #ff5722;
-      /* Warna oranye untuk angka poin */
-    }
 
     .withdraw-section {
       display: none;
@@ -372,323 +378,324 @@
           Point <span id="earned-points">0</span>
         </p>
       </div>
-      <script src="https://telegram.org/js/telegram-web-app.js"></script>
-      <script>
-        // Initialize Telegram WebApp
-        const tg = window.Telegram.WebApp;
-
-        // Expand WebApp to full height
-        tg.expand();
-
-        // Access user data
-        const user = tg.initDataUnsafe?.user;
-
-        // Check if user data is available
-        if (user) {
-          // Display user's photo
-          const userPhoto = document.getElementById('user-photo');
-          if (user.photo_url) {
-            userPhoto.src = user.photo_url;
-          } else {
-            userPhoto.src = 'https://via.placeholder.com/100'; // Placeholder if no photo
-          }
-
-          // Display user's name
-          const userName = document.getElementById('user-name');
-          userName.textContent = `Hello, ${user.first_name} ${user.last_name || ''} (@${user.username || 'No username'})`;
-        } else {
-          document.querySelector('.user-info').innerHTML = '<p>User data not available</p>';
-        }
-      </script>
-      <!--// Banner Kecil -->
-      <script type="text/javascript">
-        atOptions = {
-          'key': '4fdff508f72353f5e340f159d71598f7',
-          'format': 'iframe',
-          'height': 50,
-          'width': 320,
-          'params': {}
-        };
-      </script>
-      <script type="text/javascript" src="//www.highperformanceformat.com/4fdff508f72353f5e340f159d71598f7/invoke.js"></script>
-      <!--// batas Banner Kecil -->
-
-      <button id="watch-ad-btn" onclick="watchAd()">Watch Ads FreeBet 15000</button>
-      <div id="dice-table" class="dice-table" style="display: none;">
-        <div class="dice" id="dice-1"></div>
-        <div class="dice" id="dice-2"></div>
-      </div>
-      <div id="game-controls" style="display: none;">
-        <p>
-          Enter your betting points:
-        </p>
-        <input type="number" id="bet-points" min="1" placeholder="Enter betting points">
-
-        <p>
-          Choose your bet:
-        </p>
-        <p>
-          Big/Small Win multiplied by X2, If a draw multiplied by X5
-        </p>
-        <select id="bet-choice">
-          <option value="big">Large (8-12)</option>
-          <option value="small">Small (2-6)</option>
-          <option value="tie">Draw (7)</option>
-        </select>
-
-        <button id="roll-dice-btn" onclick="rollDice()">Roll the Dice</button>
-        <p id="dice-result"></p>
-      </div>
-
-
-
-      <!--// Banner Kecil -->
-      <script type="text/javascript">
-        atOptions = {
-          'key': '4fdff508f72353f5e340f159d71598f7',
-          'format': 'iframe',
-          'height': 50,
-          'width': 320,
-          'params': {}
-        };
-      </script>
-      <script type="text/javascript" src="//www.highperformanceformat.com/4fdff508f72353f5e340f159d71598f7/invoke.js"></script>
-      <!--// Banner Kecil batas-->
-      <button type="button" onclick="showWithdrawForm()">Withdraw</button>
-      <div class="withdraw-section" style="margin-top: 20px;">
-        <h3 style="color: orange; margin-bottom: 15px;">Withdrawal Request</h3>
-        <form id="withdraw-form">
-          <select id="withdraw-amount">
-            <option value="500">Rp 500  =  3.750.000 point </option>
-            <option value="1000">1000  =  7.500.000 point  </option>
-            <option value="10000">10000  =  75.000.000 point </option>
-          </select>
-          <input type="text" id="phone-number" placeholder="Enter Fund Number" required>
-          <select id="payment-method">
-            <option value="Dana">DANA</option>
-            <option value="OVO">OVO</option>
-            <option value="GOPAY">GOPAY</option>
-          </select>
-
-          <button type="button" onclick="withdrawPoints()"> Withdraw </button>
-        </form>
-        <p id="withdraw-status"></p>
-      </div>
     </div>
-
-    <script src='//niphaumeenses.net/vignette.min.js' data-zone='8860323' data-sdk='show_8860323'></script>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script>
+      // Initialize Telegram WebApp
+      const tg = window.Telegram.WebApp;
 
-      let adWatched = false;
+      // Expand WebApp to full height
+      tg.expand();
 
-      let earnedPoints = 0;
-      const maxBetPoints = 10000;
+      // Access user data
+      const user = tg.initDataUnsafe?.user;
 
-      // Muat nilai poin dari localStorage
-      if (localStorage.getItem('earned-points')) {
-        earnedPoints = parseFloat(localStorage.getItem('earned-points'));
-      }
-
-      // Perbarui nilai poin di elemen HTML
-      document.getElementById('earned-points').textContent = earnedPoints;
-
-      // Simpan nilai poin ke localStorage
-      localStorage.setItem('earned-points', earnedPoints);
-
-
-      function watchAd() {
-        // Disable the button while waiting for the ad
-        document.getElementById('watch-ad-btn').disabled = true;
-        document.getElementById('watch-ad-btn').textContent = 'Wait a minute...'; // Change button text
-
-        // Simulate watching an ad
-        if (typeof show_8860323 === 'function') {
-          show_8860323().then(() => {
-            setTimeout(() => {
-              adWatched = true;
-              earnedPoints += 15000;
-              document.getElementById('earned-points').textContent = earnedPoints;
-              localStorage.setItem('earned-points', earnedPoints);
-
-              // Display dice table and game controls after 3-second delay
-              document.getElementById('dice-table').style.display = 'flex';
-              document.getElementById('game-controls').style.display = 'block';
-              document.getElementById('watch-ad-btn').style.display = 'none'; // Hide the button
-            }, 3000); // 3-second delay
-          });
-        }
-      }
-
-
-      function generateDiceFace(diceElement, number) {
-        diceElement.innerHTML = '';
-        const positions = [
-          [],
-          ['center'],
-          ['top-left',
-            'bottom-right'],
-          ['top-left',
-            'center',
-            'bottom-right'],
-          ['top-left',
-            'top-right',
-            'bottom-left',
-            'bottom-right'],
-          ['top-left',
-            'top-right',
-            'center',
-            'bottom-left',
-            'bottom-right'],
-          ['top-left',
-            'top-right',
-            'bottom-left',
-            'bottom-right',
-            'center',
-            'bottom-center']
-        ];
-        positions[number].forEach(pos => {
-          const dot = document.createElement('div');
-          dot.className = `dot ${pos}`;
-          diceElement.appendChild(dot);
-        });
-      }
-
-      function rollDice() {
-        if (!adWatched) {
-          alert("You must watch an ad before rolling the dice!");
-          return;
-        }
-
-        const betPoints = parseInt(document.getElementById('bet-points').value);
-        const betChoice = document.getElementById('bet-choice').value;
-
-        // Validate if bet points are within range
-        if (isNaN(betPoints) || betPoints <= 0 || betPoints > earnedPoints || betPoints > maxBetPoints) {
-          document.getElementById('dice-result').textContent = `Invalid bet amount (Max ${maxBetPoints} Points).`;
-          return;
-        }
-
-        document.getElementById('roll-dice-btn').disabled = true;
-        show_8860323().then(() => {
-          document.getElementById('dice-result').textContent = "Roll the dice...";
-          document.getElementById('dice-table').style.display = 'none';
-
-          setTimeout(() => {
-            const dice1 = Math.floor(Math.random() * 6) + 1;
-            const dice2 = Math.floor(Math.random() * 6) + 1;
-            const diceSum = dice1 + dice2;
-
-            document.getElementById('dice-table').style.display = 'flex';
-            generateDiceFace(document.getElementById('dice-1'), dice1);
-            generateDiceFace(document.getElementById('dice-2'), dice2);
-
-            let resultMessage;
-
-            if (
-              (betChoice === 'big' && diceSum >= 8 && diceSum <= 12) ||
-              (betChoice === 'small' && diceSum >= 2 && diceSum <= 6) ||
-              (betChoice === 'tie' && diceSum === 7)
-            ) {
-              let reward;
-              if (betChoice === 'big' || betChoice === 'small') {
-                reward = betPoints * 2; // Multiply the bet by 2 for big or small
-              } else if (betChoice === 'tie') {
-                reward = betPoints * 5; // Multiply the bet by 5 for a tie
-              }
-              earnedPoints += reward;
-              resultMessage = `Congratulations! You won ${reward} points.`;
-            } else {
-              earnedPoints -= betPoints;
-              resultMessage = "Sorry, you lost the bet.";
-            }
-
-            earnedPoints = Math.max(earnedPoints, 0);
-            document.getElementById('dice-result').textContent = resultMessage;
-            document.getElementById('earned-points').textContent = earnedPoints;
-            localStorage.setItem('earned-points', earnedPoints);
-            document.getElementById('roll-dice-btn').disabled = false;
-          },
-            3000);
-        });
-      }
-
-      function showWithdrawForm() {
-        const withdrawSection = document.querySelector('.withdraw-section');
-        if (withdrawSection.style.display === 'none' || withdrawSection.style.display === '') {
-          withdrawSection.style.display = 'block'; // Tampilkan form
+      // Check if user data is available
+      if (user) {
+        // Display user's photo
+        const userPhoto = document.getElementById('user-photo');
+        if (user.photo_url) {
+          userPhoto.src = user.photo_url;
         } else {
-          withdrawSection.style.display = 'none'; // Sembunyikan form
-        }
-      }
-
-      function withdrawPoints() {
-        const withdrawAmount = parseInt(document.getElementById('withdraw-amount').value);
-        const phoneNumber = document.getElementById('phone-number').value;
-        const paymentMethod = document.getElementById('payment-method').value;
-
-        let requiredPoints = 0;
-        if (withdrawAmount == 500) {
-          requiredPoints = 3750000;
-        } else if (withdrawAmount == 1000) {
-          requiredPoints = 7500000;
-        } else if (withdrawAmount == 10000) {
-          requiredPoints = 75000000;
+          userPhoto.src = 'https://via.placeholder.com/100'; // Placeholder if no photo
         }
 
-        if (isNaN(withdrawAmount) || earnedPoints < requiredPoints || !phoneNumber || !paymentMethod) {
-          document.getElementById('withdraw-status').textContent = "Invalid withdrawal details.";
-          return;
-        }
-
-
-        // Subtract the amount from earnedPoints
-        earnedPoints -= amount;
-
-        // Update the earned points on the UI
-        document.getElementById('earned-points').textContent = earnedPoints;
-        localStorage.setItem('earned-points', earnedPoints);
-        document.getElementById('withdraw-status').textContent = "Withdrawal request sent.";
-
-        // Access Telegram username dynamically from WebApp data
-        const tg = window.Telegram.WebApp;
-        const user = tg.initDataUnsafe?.user;
-        const telegramUsername = user ? user.username || 'No username': 'No username';
-
-        const adminChatId = '@raflistore_24'; // Admin's Telegram chat ID
-        const botToken = '7971014111:AAF23urpxpxjcphCJI6AM4KYWGN6lMsJ5Dc'; // Your bot's token
-        const message = `New withdrawal request:\n\n` +
-        `Amount: ${amount}\n` +
-        `Phone number: ${phoneNumber}\n` +
-        `Payment Methods: ${paymentMethod}\n` +
-        `Username Telegram: @${telegramUsername}\n` +
-        `Remaining Points: ${earnedPoints}`; // Include the remaining earned points in the message
-
-        fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            chat_id: adminChatId, text: message
-          })
-        }).then(response => response.json())
-        .then(data => {
-          if (data.ok) {
-            document.getElementById('withdraw-status').textContent += "\nAdmin successfully notified.";
-          } else {
-            document.getElementById('withdraw-status').textContent += "\nFailed to notify admin.";
-          }
-        }).catch(error => {
-          console.error(error);
-          document.getElementById('withdraw-status').textContent += "\nAn error occurred while contacting admin.";
-        });
-
-        // Reset the withdrawal form
-        document.getElementById('withdraw-form').reset();
+        // Display user's name
+        const userName = document.getElementById('user-name');
+        userName.textContent = `Hello, ${user.first_name} ${user.last_name || ''} (@${user.username || 'No username'})`;
+      } else {
+        document.querySelector('.user-info').innerHTML = '<p>User data not available</p>';
       }
     </script>
-    <!--// awal sosial bar -->
-    <script type='text/javascript' src='//pl25716974.profitablecpmrate.com/a2/ac/98/a2ac98fa3d31de7c7554226a6c54df81.js'></script>
-    <!--// batas sosial bar -->
+    <!--// Banner Kecil -->
+    <script type="text/javascript">
+      atOptions = {
+        'key': '4fdff508f72353f5e340f159d71598f7',
+        'format': 'iframe',
+        'height': 50,
+        'width': 320,
+        'params': {}
+      };
+    </script>
+    <script type="text/javascript" src="//www.highperformanceformat.com/4fdff508f72353f5e340f159d71598f7/invoke.js"></script>
+    <!--// batas Banner Kecil -->
+
+    <button id="watch-ad-btn" onclick="watchAd()">Watch Ads FreeBet 15000</button>
+    <div id="dice-table" class="dice-table" style="display: none;">
+      <div class="dice" id="dice-1"></div>
+      <div class="dice" id="dice-2"></div>
+    </div>
+    <div id="game-controls" style="display: none;">
+      <p>
+        Enter your betting points:
+      </p>
+      <input type="number" id="bet-points" min="1" placeholder="Enter betting points">
+
+      <p>
+        Choose your bet:
+      </p>
+      <p>
+        Big/Small Win multiplied by X2, If a draw multiplied by X5
+      </p>
+      <select id="bet-choice">
+        <option value="big">Large (8-12)</option>
+        <option value="small">Small (2-6)</option>
+        <option value="tie">Draw (7)</option>
+      </select>
+
+      <button id="roll-dice-btn" onclick="rollDice()">Roll the Dice</button>
+      <p id="dice-result"></p>
+    </div>
+
+
+
+    <!--// Banner Kecil -->
+    <script type="text/javascript">
+      atOptions = {
+        'key': '4fdff508f72353f5e340f159d71598f7',
+        'format': 'iframe',
+        'height': 50,
+        'width': 320,
+        'params': {}
+      };
+    </script>
+    <script type="text/javascript" src="//www.highperformanceformat.com/4fdff508f72353f5e340f159d71598f7/invoke.js"></script>
+    <!--// Banner Kecil batas-->
+    <button type="button" onclick="showWithdrawForm()">Withdraw</button>
+    <div class="withdraw-section" style="margin-top: 20px;">
+      <h3 style="color: orange; margin-bottom: 15px;">Withdrawal Request</h3>
+      <form id="withdraw-form">
+        <select id="withdraw-amount">
+          <option value="500">Rp 500  =  3.750.000 point </option>
+          <option value="1000">1000  =  7.500.000 point  </option>
+          <option value="10000">10000  =  75.000.000 point </option>
+        </select>
+        <input type="text" id="phone-number" placeholder="Enter Fund Number" required>
+        <select id="payment-method">
+          <option value="Dana">DANA</option>
+          <option value="OVO">OVO</option>
+          <option value="GOPAY">GOPAY</option>
+        </select>
+
+        <button type="button" onclick="withdrawPoints()"> Withdraw </button>
+      </form>
+      <p id="withdraw-status"></p>
+    </div>
+  </div>
+
+  <script src='//niphaumeenses.net/vignette.min.js' data-zone='8860323' data-sdk='show_8860323'></script>
+  <script>
+
+    let adWatched = false;
+
+    let earnedPoints = 0;
+    const maxBetPoints = 10000;
+
+    // Muat nilai poin dari localStorage
+    if (localStorage.getItem('earned-points')) {
+      earnedPoints = parseFloat(localStorage.getItem('earned-points'));
+    }
+
+    // Perbarui nilai poin di elemen HTML
+    document.getElementById('earned-points').textContent = earnedPoints;
+
+    // Simpan nilai poin ke localStorage
+    localStorage.setItem('earned-points', earnedPoints);
+
+
+    function watchAd() {
+      // Disable the button while waiting for the ad
+      document.getElementById('watch-ad-btn').disabled = true;
+      document.getElementById('watch-ad-btn').textContent = 'Wait a minute...'; // Change button text
+
+      // Simulate watching an ad
+      if (typeof show_8860323 === 'function') {
+        show_8860323().then(() => {
+          setTimeout(() => {
+            adWatched = true;
+            earnedPoints += 15000;
+            document.getElementById('earned-points').textContent = earnedPoints;
+            localStorage.setItem('earned-points', earnedPoints);
+
+            // Display dice table and game controls after 3-second delay
+            document.getElementById('dice-table').style.display = 'flex';
+            document.getElementById('game-controls').style.display = 'block';
+            document.getElementById('watch-ad-btn').style.display = 'none'; // Hide the button
+          }, 3000); // 3-second delay
+        });
+      }
+    }
+
+
+    function generateDiceFace(diceElement, number) {
+      diceElement.innerHTML = '';
+      const positions = [
+        [],
+        ['center'],
+        ['top-left',
+          'bottom-right'],
+        ['top-left',
+          'center',
+          'bottom-right'],
+        ['top-left',
+          'top-right',
+          'bottom-left',
+          'bottom-right'],
+        ['top-left',
+          'top-right',
+          'center',
+          'bottom-left',
+          'bottom-right'],
+        ['top-left',
+          'top-right',
+          'bottom-left',
+          'bottom-right',
+          'center',
+          'bottom-center']
+      ];
+      positions[number].forEach(pos => {
+        const dot = document.createElement('div');
+        dot.className = `dot ${pos}`;
+        diceElement.appendChild(dot);
+      });
+    }
+
+    function rollDice() {
+      if (!adWatched) {
+        alert("You must watch an ad before rolling the dice!");
+        return;
+      }
+
+      const betPoints = parseInt(document.getElementById('bet-points').value);
+      const betChoice = document.getElementById('bet-choice').value;
+
+      // Validate if bet points are within range
+      if (isNaN(betPoints) || betPoints <= 0 || betPoints > earnedPoints || betPoints > maxBetPoints) {
+        document.getElementById('dice-result').textContent = `Invalid bet amount (Max ${maxBetPoints} Points).`;
+        return;
+      }
+
+      document.getElementById('roll-dice-btn').disabled = true;
+      show_8860323().then(() => {
+        document.getElementById('dice-result').textContent = "Roll the dice...";
+        document.getElementById('dice-table').style.display = 'none';
+
+        setTimeout(() => {
+          const dice1 = Math.floor(Math.random() * 6) + 1;
+          const dice2 = Math.floor(Math.random() * 6) + 1;
+          const diceSum = dice1 + dice2;
+
+          document.getElementById('dice-table').style.display = 'flex';
+          generateDiceFace(document.getElementById('dice-1'), dice1);
+          generateDiceFace(document.getElementById('dice-2'), dice2);
+
+          let resultMessage;
+
+          if (
+            (betChoice === 'big' && diceSum >= 8 && diceSum <= 12) ||
+            (betChoice === 'small' && diceSum >= 2 && diceSum <= 6) ||
+            (betChoice === 'tie' && diceSum === 7)
+          ) {
+            let reward;
+            if (betChoice === 'big' || betChoice === 'small') {
+              reward = betPoints * 2; // Multiply the bet by 2 for big or small
+            } else if (betChoice === 'tie') {
+              reward = betPoints * 5; // Multiply the bet by 5 for a tie
+            }
+            earnedPoints += reward;
+            resultMessage = `Congratulations! You won ${reward} points.`;
+          } else {
+            earnedPoints -= betPoints;
+            resultMessage = "Sorry, you lost the bet.";
+          }
+
+          earnedPoints = Math.max(earnedPoints, 0);
+          document.getElementById('dice-result').textContent = resultMessage;
+          document.getElementById('earned-points').textContent = earnedPoints;
+          localStorage.setItem('earned-points', earnedPoints);
+          document.getElementById('roll-dice-btn').disabled = false;
+        },
+          3000);
+      });
+    }
+
+    function showWithdrawForm() {
+      const withdrawSection = document.querySelector('.withdraw-section');
+      if (withdrawSection.style.display === 'none' || withdrawSection.style.display === '') {
+        withdrawSection.style.display = 'block'; // Tampilkan form
+      } else {
+        withdrawSection.style.display = 'none'; // Sembunyikan form
+      }
+    }
+
+    function withdrawPoints() {
+      const withdrawAmount = parseInt(document.getElementById('withdraw-amount').value);
+      const phoneNumber = document.getElementById('phone-number').value;
+      const paymentMethod = document.getElementById('payment-method').value;
+
+      let requiredPoints = 0;
+      if (withdrawAmount == 500) {
+        requiredPoints = 3750000;
+      } else if (withdrawAmount == 1000) {
+        requiredPoints = 7500000;
+      } else if (withdrawAmount == 10000) {
+        requiredPoints = 75000000;
+      }
+
+      if (isNaN(withdrawAmount) || earnedPoints < requiredPoints || !phoneNumber || !paymentMethod) {
+        document.getElementById('withdraw-status').textContent = "Invalid withdrawal details.";
+        return;
+      }
+
+
+      // Subtract the amount from earnedPoints
+      earnedPoints -= amount;
+
+      // Update the earned points on the UI
+      document.getElementById('earned-points').textContent = earnedPoints;
+      localStorage.setItem('earned-points', earnedPoints);
+      document.getElementById('withdraw-status').textContent = "Withdrawal request sent.";
+
+      // Access Telegram username dynamically from WebApp data
+      const tg = window.Telegram.WebApp;
+      const user = tg.initDataUnsafe?.user;
+      const telegramUsername = user ? user.username || 'No username': 'No username';
+
+      const adminChatId = '@raflistore_24'; // Admin's Telegram chat ID
+      const botToken = '7971014111:AAF23urpxpxjcphCJI6AM4KYWGN6lMsJ5Dc'; // Your bot's token
+      const message = `New withdrawal request:\n\n` +
+      `Amount: ${amount}\n` +
+      `Phone number: ${phoneNumber}\n` +
+      `Payment Methods: ${paymentMethod}\n` +
+      `Username Telegram: @${telegramUsername}\n` +
+      `Remaining Points: ${earnedPoints}`; // Include the remaining earned points in the message
+
+      fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          chat_id: adminChatId, text: message
+        })
+      }).then(response => response.json())
+      .then(data => {
+        if (data.ok) {
+          document.getElementById('withdraw-status').textContent += "\nAdmin successfully notified.";
+        } else {
+          document.getElementById('withdraw-status').textContent += "\nFailed to notify admin.";
+        }
+      }).catch(error => {
+        console.error(error);
+        document.getElementById('withdraw-status').textContent += "\nAn error occurred while contacting admin.";
+      });
+
+      // Reset the withdrawal form
+      document.getElementById('withdraw-form').reset();
+    }
+  </script>
+  <!--// awal sosial bar -->
+  <script type='text/javascript' src='//pl25716974.profitablecpmrate.com/a2/ac/98/a2ac98fa3d31de7c7554226a6c54df81.js'></script>
+  <!--// batas sosial bar -->
 
 </body>
