@@ -389,8 +389,9 @@
       Point : <span id="earned-points">0</span>
     </p>
     <p>
-      money : Rp <span id="earned">0</span>
+      money : <span id="earned">0</span>
     </p>
+
     <!--// Banner Kecil -->
     <script type="text/javascript">
       atOptions = {
@@ -483,6 +484,8 @@
     document.getElementById('earned-points').textContent = earnedPoints;
     // Simpan nilai poin ke localStorage
     localStorage.setItem('earned-points', earnedPoints);
+    let koinPerRupiah = 2500;
+    updateEarned(earnedPoints,koinPerRupiah)
 
     function updateEarned(points, koinPerRupiah) {
       const earned = document.getElementById('earned');
