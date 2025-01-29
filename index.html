@@ -4,6 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Watch Ads Earn Rewards</title>
+  <link
+  href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+  rel="stylesheet"
+  integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+  crossorigin="anonymous"
+  />
   <style>
     body {
       margin: 0;
@@ -14,7 +20,7 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
+      height: 500px;
       flex-direction: column;
     }
 
@@ -391,7 +397,10 @@
       </select>
 
       <button id="roll-dice-btn" onclick="rollDice()">Roll the Dice</button>
-      <p id="dice-result"></p>
+      <!--// <p id="dice-result"></p> -->
+      <div id="dice-result" class="mt-4"></div>
+
+
     </div>
 
     <div class="stats">
@@ -436,6 +445,15 @@
 
   <script src='//niphaumeenses.net/vignette.min.js' data-zone='8860323' data-sdk='show_8860323'></script>
   <script>
+    function showAlert(message, type = "danger") {
+      const alertContainer = document.getElementById("alert-container");
+      alertContainer.innerHTML = `
+      <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+      ${message}
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+      `;
+    }
 
     let adWatched = false;
 
@@ -522,121 +540,124 @@
 
       // Validate if bet points are within range
       if (isNaN(betPoints) || betPoints <= 0 || betPoints > earnedPoints || betPoints > maxBetPoints) {
-        document.getElementById('dice-result').textContent = `Invalid bet amount (Max ${maxBetPoints} Points).`;
+        showAlert(`Invalid bet amount (max ${maxBetPoints} Points). `)
+        // document.getElementById('dice-result').textContent = `Invalid bet amount (Max ${maxBetPoints} Points).`;
         return;
       }
 
       document.getElementById('roll-dice-btn').disabled = true;
       show_8860323().then(() => {
-        document.getElementById('dice-result').textContent = "Roll the dice...";
-        document.getElementById('dice-table').style.display = 'none';
+        showAlert("Roll The dice..."")
+          // document.getElementById('dice-result').textContent = "Roll the dice...";
+          document.getElementById('dice-table').style.display = 'none';
 
-        setTimeout(() => {
-          const dice1 = Math.floor(Math.random() * 6) + 1;
-          const dice2 = Math.floor(Math.random() * 6) + 1;
-          const diceSum = dice1 + dice2;
+          setTimeout(() => {
+            const dice1 = Math.floor(Math.random() * 6) + 1;
+            const dice2 = Math.floor(Math.random() * 6) + 1;
+            const diceSum = dice1 + dice2;
 
-          document.getElementById('dice-table').style.display = 'flex';
-          generateDiceFace(document.getElementById('dice-1'), dice1);
-          generateDiceFace(document.getElementById('dice-2'), dice2);
+            document.getElementById('dice-table').style.display = 'flex';
+            generateDiceFace(document.getElementById('dice-1'), dice1);
+            generateDiceFace(document.getElementById('dice-2'), dice2);
 
-          let resultMessage;
+            let resultMessage;
 
-          if (
-            (betChoice === 'big' && diceSum >= 8 && diceSum <= 12) ||
-            (betChoice === 'small' && diceSum >= 2 && diceSum <= 6) ||
-            (betChoice === 'tie' && diceSum === 7)
-          ) {
-            let reward;
-            if (betChoice === 'big' || betChoice === 'small') {
-              reward = betPoints * 2; // Multiply the bet by 2 for big or small
-            } else if (betChoice === 'tie') {
-              reward = betPoints * 5; // Multiply the bet by 5 for a tie
+            if (
+              (betChoice === 'big' && diceSum >= 8 && diceSum <= 12) ||
+              (betChoice === 'small' && diceSum >= 2 && diceSum <= 6) ||
+              (betChoice === 'tie' && diceSum === 7)
+            ) {
+              let reward;
+              if (betChoice === 'big' || betChoice === 'small') {
+                reward = betPoints * 2; // Multiply the bet by 2 for big or small
+              } else if (betChoice === 'tie') {
+                reward = betPoints * 5; // Multiply the bet by 5 for a tie
+              }
+              earnedPoints += reward;
+              resultMessage = `Congratulations! You won ${reward} points.`;
+            } else {
+              earnedPoints -= betPoints;
+              resultMessage = "Sorry, you lost the bet.";
             }
-            earnedPoints += reward;
-            resultMessage = `Congratulations! You won ${reward} points.`;
-          } else {
-            earnedPoints -= betPoints;
-            resultMessage = "Sorry, you lost the bet.";
-          }
 
-          earnedPoints = Math.max(earnedPoints, 0);
-          document.getElementById('dice-result').textContent = resultMessage;
-          document.getElementById('earned-points').textContent = earnedPoints;
-          localStorage.setItem('earned-points', earnedPoints);
-          document.getElementById('roll-dice-btn').disabled = false;
-        },
-          3000);
-      });
-    }
-    function withdrawPoints() {
-      const withdrawAmount = parseInt(document.getElementById('withdraw-amount').value);
-      const phoneNumber = document.getElementById('phone-number').value;
-      const paymentMethod = document.getElementById('payment-method').value;
-
-      let requiredPoints = 0;
-      if (withdrawAmount == 500) {
-        requiredPoints = 3750000;
-      } else if (withdrawAmount == 1000) {
-        requiredPoints = 7500000;
-      } else if (withdrawAmount == 10000) {
-        requiredPoints = 75000000;
+            earnedPoints = Math.max(earnedPoints, 0);
+            showAlert(resultMessage)
+            //document.getElementById('dice-result').textContent = resultMessage;
+            document.getElementById('earned-points').textContent = earnedPoints;
+            localStorage.setItem('earned-points', earnedPoints);
+            document.getElementById('roll-dice-btn').disabled = false;
+          },
+            3000);
+        });
       }
+      function withdrawPoints() {
+        const withdrawAmount = parseInt(document.getElementById('withdraw-amount').value);
+        const phoneNumber = document.getElementById('phone-number').value;
+        const paymentMethod = document.getElementById('payment-method').value;
 
-      if (isNaN(withdrawAmount) || earnedPoints < requiredPoints || !phoneNumber || !paymentMethod) {
-        document.getElementById('withdraw-status').textContent = "Invalid withdrawal details.";
-        return;
-      }
-
-
-      // Subtract the amount from earnedPoints
-      earnedPoints -= amount;
-
-      // Update the earned points on the UI
-      document.getElementById('earned-points').textContent = earnedPoints;
-      localStorage.setItem('earned-points', earnedPoints);
-      document.getElementById('withdraw-status').textContent = "Withdrawal request sent.";
-
-      // Access Telegram username dynamically from WebApp data
-      const tg = window.Telegram.WebApp;
-      const user = tg.initDataUnsafe?.user;
-      const telegramUsername = user ? user.username || 'No username': 'No username';
-
-      const adminChatId = '@raflistore_24'; // Admin's Telegram chat ID
-      const botToken = '7971014111:AAF23urpxpxjcphCJI6AM4KYWGN6lMsJ5Dc'; // Your bot's token
-      const message = `New withdrawal request:\n\n` +
-      `Amount: ${amount}\n` +
-      `Phone number: ${phoneNumber}\n` +
-      `Payment Methods: ${paymentMethod}\n` +
-      `Username Telegram: @${telegramUsername}\n` +
-      `Remaining Points: ${earnedPoints}`; // Include the remaining earned points in the message
-
-      fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          chat_id: adminChatId, text: message
-        })
-      }).then(response => response.json())
-      .then(data => {
-        if (data.ok) {
-          document.getElementById('withdraw-status').textContent += "\nAdmin successfully notified.";
-        } else {
-          document.getElementById('withdraw-status').textContent += "\nFailed to notify admin.";
+        let requiredPoints = 0;
+        if (withdrawAmount == 500) {
+          requiredPoints = 3750000;
+        } else if (withdrawAmount == 1000) {
+          requiredPoints = 7500000;
+        } else if (withdrawAmount == 10000) {
+          requiredPoints = 75000000;
         }
-      }).catch(error => {
-        console.error(error);
-        document.getElementById('withdraw-status').textContent += "\nAn error occurred while contacting admin.";
-      });
 
-      // Reset the withdrawal form
-      document.getElementById('withdraw-form').reset();
-    }
-  </script>
-  <!--// awal sosial bar -->
-  <script type='text/javascript' src='//pl25716974.profitablecpmrate.com/a2/ac/98/a2ac98fa3d31de7c7554226a6c54df81.js'></script>
-  <!--// batas sosial bar -->
+        if (isNaN(withdrawAmount) || earnedPoints < requiredPoints || !phoneNumber || !paymentMethod) {
+          document.getElementById('withdraw-status').textContent = "Invalid withdrawal details.";
+          return;
+        }
+
+
+        // Subtract the amount from earnedPoints
+        earnedPoints -= amount;
+
+        // Update the earned points on the UI
+        document.getElementById('earned-points').textContent = earnedPoints;
+        localStorage.setItem('earned-points', earnedPoints);
+        document.getElementById('withdraw-status').textContent = "Withdrawal request sent.";
+
+        // Access Telegram username dynamically from WebApp data
+        const tg = window.Telegram.WebApp;
+        const user = tg.initDataUnsafe?.user;
+        const telegramUsername = user ? user.username || 'No username': 'No username';
+
+        const adminChatId = '@raflistore_24'; // Admin's Telegram chat ID
+        const botToken = '7971014111:AAF23urpxpxjcphCJI6AM4KYWGN6lMsJ5Dc'; // Your bot's token
+        const message = `New withdrawal request:\n\n` +
+        `Amount: ${amount}\n` +
+        `Phone number: ${phoneNumber}\n` +
+        `Payment Methods: ${paymentMethod}\n` +
+        `Username Telegram: @${telegramUsername}\n` +
+        `Remaining Points: ${earnedPoints}`; // Include the remaining earned points in the message
+
+        fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            chat_id: adminChatId, text: message
+          })
+        }).then(response => response.json())
+        .then(data => {
+          if (data.ok) {
+            document.getElementById('withdraw-status').textContent += "\nAdmin successfully notified.";
+          } else {
+            document.getElementById('withdraw-status').textContent += "\nFailed to notify admin.";
+          }
+        }).catch(error => {
+          console.error(error);
+          document.getElementById('withdraw-status').textContent += "\nAn error occurred while contacting admin.";
+        });
+
+        // Reset the withdrawal form
+        document.getElementById('withdraw-form').reset();
+      }
+    </script>
+    <!--// awal sosial bar -->
+    <script type='text/javascript' src='//pl25716974.profitablecpmrate.com/a2/ac/98/a2ac98fa3d31de7c7554226a6c54df81.js'></script>
+    <!--// batas sosial bar -->
 
 </body>
