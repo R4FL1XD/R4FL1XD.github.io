@@ -194,59 +194,53 @@
 
     .withdraw-section {
       display: none;
-    }
-
-
-
-
-    #withdraw-form {
+      /* Sembunyikan form secara default */
+      margin-top: 20px;
+      padding: 15px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
       background-color: #f9f9f9;
-      padding: 20px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
 
-    #withdraw-form select {
-      padding: 10px;
-      border-radius: 5px;
+    .withdraw-section h3 {
+      color: orange;
+      margin-bottom: 15px;
+      font-size: 18px;
+    }
+
+    .withdraw-section form {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .withdraw-section select,
+    .withdraw-section input {
+      padding: 8px;
       border: 1px solid #ccc;
-      margin-bottom: 10px;
-      width: calc(100% - 20px);
+      border-radius: 4px;
       font-size: 14px;
     }
 
-    #withdraw-form input[type="text"] {
+    .withdraw-section button[type="button"] {
       padding: 10px;
-      border-radius: 5px;
-      border: 1px solid #ccc;
-      margin-bottom: 10px;
-      width: calc(100% - 20px);
-      font-size: 14px;
-    }
-
-    #withdraw-form select:focus, #withdraw-form input[type="text"]:focus {
-      border-color: #aaa;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-    }
-
-    #withdraw-form button[type="button"] {
-      background-color: #4CAF50;
-      color: #fff;
-      padding: 10px 20px;
+      background-color: #ff5722;
+      color: white;
       border: none;
-      border-radius: 5px;
+      border-radius: 4px;
       cursor: pointer;
+      font-size: 16px;
     }
 
-    #withdraw-form button[type="button"]:hover {
-      background-color: #3e8e41;
+    .withdraw-section button[type="button"]:hover {
+      background-color: #e64a19;
     }
 
     #withdraw-status {
-      font-size: 14px;
-      color: green;
       margin-top: 10px;
+      font-size: 14px;
+      color: #333;
     }
   </style>
   <!--// awal popup -->
@@ -619,7 +613,12 @@
       }
 
       function showWithdrawForm() {
-        document.querySelector('.withdraw-section').style.display = 'block';
+        const withdrawSection = document.querySelector('.withdraw-section');
+        if (withdrawSection.style.display === 'none' || withdrawSection.style.display === '') {
+          withdrawSection.style.display = 'block'; // Tampilkan form
+        } else {
+          withdrawSection.style.display = 'none'; // Sembunyikan form
+        }
       }
 
       function withdrawPoints() {
