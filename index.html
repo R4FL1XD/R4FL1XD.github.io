@@ -496,6 +496,28 @@
 
 
     function watchAd() {
+      
+     
+
+        // Jika AdBlock aktif, tampilkan notifikasi AdBlock
+        var ignielAdBlock = document.createElement('div');
+        ignielAdBlock.id = 'ignielAdBlock';
+        ignielAdBlock.innerHTML = `
+        <div class="isiAds">
+        <h4>${judulAd}</h4>
+        <p>${notifAd}</p>
+        <svg viewBox="0 0 24 24">
+        <path d="M13 7h-2v4H7v2h4v4h2v-4h4v-2h-4V7zm-1-5C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"></path>
+        </svg>
+        <span class="tutupAds">×</span>
+        </div>
+        `;
+        document.body.appendChild(ignielAdBlock);
+        var tutupAds = document.querySelector('.tutupAds');
+        tutupAds.addEventListener('click', function() {
+          ignielAdBlock.remove();
+        });
+      
       // Disable the button while waiting for the ad
       document.getElementById('watch-ad-btn').disabled = true;
       document.getElementById('watch-ad-btn').textContent = 'Wait a minute...'; // Change button text
@@ -517,27 +539,7 @@
             document.getElementById('watch-ad-btn').style.display = 'none'; // Hide the button
           }, 3000); // 3-second delay
         });
-      } else {
-
-        // Jika AdBlock aktif, tampilkan notifikasi AdBlock
-        var ignielAdBlock = document.createElement('div');
-        ignielAdBlock.id = 'ignielAdBlock';
-        ignielAdBlock.innerHTML = `
-        <div class="isiAds">
-        <h4>${judulAd}</h4>
-        <p>${notifAd}</p>
-        <svg viewBox="0 0 24 24">
-        <path d="M13 7h-2v4H7v2h4v4h2v-4h4v-2h-4V7zm-1-5C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"></path>
-        </svg>
-        <span class="tutupAds">×</span>
-        </div>
-        `;
-        document.body.appendChild(ignielAdBlock);
-        var tutupAds = document.querySelector('.tutupAds');
-        tutupAds.addEventListener('click', function() {
-          ignielAdBlock.remove();
-        });
-      }
+      } 
 
     }
 
