@@ -401,7 +401,8 @@
     <script type="text/javascript" src="//www.highperformanceformat.com/4fdff508f72353f5e340f159d71598f7/invoke.js"></script>
     <!--// batas Banner Kecil -->
 
-    <button id="watch-ad-btn" onclick="watchAd()">Watch Ads FreeBet 15000</button>
+    <button id="main-ad-btn" onclick="mainAd()">Play Dice</button>
+    <button id="watch-ad-btn" onclick="watchAd()">Free 15000</button>
     <div id="dice-table" class="dice-table" style="display: none;">
       <div class="dice" id="dice-1"></div>
       <div class="dice" id="dice-2"></div>
@@ -448,15 +449,15 @@
     <div class="withdraw-section" style="margin-top: 20px;">
       <h3 style="color: orange; margin-bottom: 15px;">Withdrawal Request</h3>
       <form id="withdraw-form">
-        <label for="withdraw-amount">Jumlah Penarikan:</label>
+        <label for="withdraw-amount">Withdrawal Amount</label>
         <select id="withdraw-amount" required>
           <option value="1">1 USD</option>
           <option value="3">3 USD</option>
           <option value="10">10 USD</option>
         </select>
-        <label for="phone-number">Nomor Telepon:</label>
-        <input type="text" id="phone-number" placeholder="Enter Fund Number" required pattern="[0-9]{10,12}">
-        <label for="payment-method">Metode Pembayaran:</label>
+        <label for="phone-number">Withdraw Account</label>
+        <input type="text" id="phone-number" placeholder="Enter Your Account" required pattern="[0-9]{10,12}">
+        <label for="payment-method">Payment Method</label>
         <select id="payment-method" required>
           <option value="PayPal">PayPal</option>
         </select>
@@ -523,7 +524,7 @@
           const dollar = Math.floor(points / koinPerRupiah / kursDolar);
           earned.innerText = dollar.toLocaleString('en-US', {
             style: 'currency', currency: 'USD'
-          }).replace('$', '$ ');
+          }).replace('$', '$');
         })
         .catch(error => console.error(error));
       }
@@ -539,16 +540,33 @@
         adBlockEnabled = true
       } finally {
         if (adBlockEnabled) {
-          document.getElementById('watch-ad-btn').textContent = 'Adblock Detected!';
-          document.getElementById('watch-ad-btn').disabled = true;
+          document.getElementById('main-ad-btn').textContent = 'Adblock Detected!';
+          document.getElementById('main-ad-btn').disabled = true;
         } else {
-          document.getElementById('watch-ad-btn').textContent = 'Wait...';
-          document.getElementById('watch-ad-btn').disabled = false;
+          document.getElementById('main-ad-btn').textContent = 'Wait...';
+          document.getElementById('main-ad-btn').disabled = false;
         }
       }
     }
 
     function watchAd() {
+  if (typeof show_8860323 === 'function') {
+    show_8860323().then(() => {
+      earnedPoints += 15000;
+      document.getElementById('earned-points').textContent = earnedPoints;
+      localStorage.setItem('earned-points', earnedPoints);
+      const koinPerRupiah = 660;
+      updateEarned(earnedPoints, koinPerRupiah);
+    });
+    document.getElementById('watch-ad-btn').textContent = 'Wait a minute ';
+    setTimeout(() => {
+      document.getElementById('watch-ad-btn').textContent = 'Free 15000';
+    }, 5000);
+  }
+}
+
+
+    function mainAd() {
       detectAdBlock().then(() => {
         if (document.getElementById('watch-ad-btn').disabled) {
           alert('Adblock Detected! Please disable AdBlock to continue.');
@@ -565,6 +583,7 @@
               updateEarned(earnedPoints, koinPerRupiah);
               document.getElementById('dice-table').style.display = 'flex';
               document.getElementById('game-controls').style.display = 'block';
+              document.getElementById('main-ad-btn').style.display = 'none';
               document.getElementById('watch-ad-btn').style.display = 'none';
             }, 3000);
           });
@@ -752,7 +771,8 @@
           `Phone number: ${phoneNumber}\n` +
           `Payment Methods: ${paymentMethod}\n` +
           `Username Telegram: @${telegramUsername}\n` +
-          `Id Telrgram : ${telegramUserId}\n` +
+          `Id Telegram : ${telegramUserId}\n` +
+          `Code Telegram : ${languageCode}\n`+
           `Remaining Points: ${earnedPoints}`;
 
           // Include the remaining earned points in the message
