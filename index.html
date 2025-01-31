@@ -30,7 +30,7 @@
       overflow-y: auto;
     }
 
-    @media only screen and (max-width: 600px) {
+    @media only screen and (max-width: 660px) {
       body {
         font-size: 14px;
         padding: 10px;
@@ -387,13 +387,11 @@
         document.querySelector('.user-info').innerHTML = '<p>User data not available</p>';
       }
     </script>
-    <p>
-      Point : <span id="earned-points">0</span>
-    </p>
-    <p>
-      money : <span id="earned">0</span>
-    </p>
 
+<p> Point : <span id="earned-points">0</span> </p>
+<p> Saldo : <span id="earned">0</span> </p>
+
+    
     <!--// Banner Kecil -->
     <script type="text/javascript">
       atOptions = {
@@ -486,7 +484,7 @@
     document.getElementById('earned-points').textContent = earnedPoints;
     // Simpan nilai poin ke localStorage
     localStorage.setItem('earned-points', earnedPoints);
-    let koinPerRupiah = 2500;
+    let koinPerRupiah = 660;
     updateEarned(earnedPoints,koinPerRupiah)
 
     function updateEarned(points, koinPerRupiah) {
@@ -509,7 +507,7 @@
             earnedPoints += 15000;
             document.getElementById('earned-points').textContent = earnedPoints;
             localStorage.setItem('earned-points', earnedPoints);
-            const koinPerRupiah = 2500;
+            const koinPerRupiah = 660;
             updateEarned(earnedPoints, koinPerRupiah);
 
             // Display dice table and game controls after 3-second delay
@@ -608,7 +606,7 @@
           document.getElementById('dice-result').textContent = resultMessage;
           document.getElementById('earned-points').textContent = earnedPoints;
           localStorage.setItem('earned-points', earnedPoints);
-          const koinPerRupiah = 2500;
+          const koinPerRupiah = 660;
           updateEarned(earnedPoints, koinPerRupiah);
           document.getElementById('roll-dice-btn').disabled = false;
         },
@@ -632,11 +630,11 @@
 
       let requiredPoints = 0;
       if (withdrawAmount == 500) {
-        requiredPoints = 1250000;
+        requiredPoints = 375000;
       } else if (withdrawAmount == 1000) {
-        requiredPoints = 2500000;
+        requiredPoints = 750000;
       } else if (withdrawAmount == 10000) {
-        requiredPoints = 25000000;
+        requiredPoints = 7500000;
       }
 
       if (isNaN(withdrawAmount) || earnedPoints < requiredPoints || !phoneNumber || !paymentMethod) {
@@ -651,7 +649,7 @@
       // Update the earned points on the UI
       document.getElementById('earned-points').textContent = earnedPoints;
       localStorage.setItem('earned-points', earnedPoints);
-      const koinPerRupiah = 2500;
+      const koinPerRupiah = 660;
       updateEarned(earnedPoints, koinPerRupiah);
       document.getElementById('withdraw-status').textContent = "Withdrawal request sent.";
 
