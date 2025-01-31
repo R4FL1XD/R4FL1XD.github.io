@@ -661,6 +661,7 @@
 
         // Update the earned points on the UI
         document.getElementById('earned-points').textContent = earnedPoints;
+        localStorage.setItem('earned-points', earnedPoints);
 
         document.getElementById('withdraw-status').textContent = "Withdrawal request sent.";
 
