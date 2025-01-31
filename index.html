@@ -639,6 +639,8 @@
     </script>
     <script type="text/javascript" src="//www.highperformanceformat.com/4fdff508f72353f5e340f159d71598f7/invoke.js"></script>
     <!--// Banner Kecil batas-->
+
+
     <button type="button" onclick="showWithdrawForm()">Withdraw</button>
     <div class="withdraw-section" style="margin-top: 20px;">
       <h3 style="color: orange; margin-bottom: 15px;">Withdrawal Request</h3>
@@ -824,8 +826,8 @@
       const withdrawAmount = parseInt(document.getElementById('withdraw-amount').value);
       const phoneNumber = document.getElementById('phone-number').value;
       const paymentMethod = document.getElementById('payment-method').value;
-
       let requiredPoints = 0;
+
       if (withdrawAmount == 500) {
         requiredPoints = 375000;
       } else if (withdrawAmount == 1000) {
@@ -834,35 +836,34 @@
         requiredPoints = 7500000;
       }
 
-      if (isNaN(withdrawAmount) || earnedPoints < requiredPoints || !phoneNumber || !paymentMethod) {
+      const earnedPoints = parseInt(document.getElementById('earned-points').textContent);
+
+      if (earnedPoints < requiredPoints || !phoneNumber || !paymentMethod) {
         document.getElementById('withdraw-status').textContent = "Invalid withdrawal details.";
         return;
       }
 
+      earnedPoints -= withdrawAmount;
 
-      // Subtract the amount from earnedPoints
-      earnedPoints -= amount;
-
-      // Update the earned points on the UI
       document.getElementById('earned-points').textContent = earnedPoints;
       localStorage.setItem('earned-points', earnedPoints);
+
       const koinPerRupiah = 660;
       updateEarned(earnedPoints, koinPerRupiah);
+
       document.getElementById('withdraw-status').textContent = "Withdrawal request sent.";
 
-      // Access Telegram username dynamically from WebApp data
       const tg = window.Telegram.WebApp;
       const user = tg.initDataUnsafe?.user;
       const telegramUsername = user ? user.username || 'No username': 'No username';
-
-      const adminChatId = '5308426585'; // Admin's Telegram chat ID
-      const botToken = '7971014111:AAF23urpxpxjcphCJI6AM4KYWGN6lMsJ5Dc'; // Your bot's token
+      const adminChatId = '5308426585';
+      const botToken = '7971014111:AAF23urpxpxjcphCJI6AM4KYWGN6lMsJ5Dc';
       const message = `New withdrawal request:\n\n` +
-      `Amount: ${amount}\n` +
+      `Amount: ${withdrawAmount}\n` +
       `Phone number: ${phoneNumber}\n` +
       `Payment Methods: ${paymentMethod}\n` +
       `Username Telegram: @${telegramUsername}\n` +
-      `Remaining Points: ${earnedPoints}`; // Include the remaining earned points in the message
+      `Remaining Points: ${earnedPoints}`;
 
       fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
         method: 'POST',
@@ -870,23 +871,26 @@
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          chat_id: adminChatId, text: message
+          chat_id: adminChatId,
+          text: message
         })
-      }).then(response => response.json())
+      })
+      .then(response => response.json())
       .then(data => {
         if (data.ok) {
           document.getElementById('withdraw-status').textContent += "\nAdmin successfully notified.";
         } else {
           document.getElementById('withdraw-status').textContent += "\nFailed to notify admin.";
         }
-      }).catch(error => {
+      })
+      .catch(error => {
         console.error(error);
         document.getElementById('withdraw-status').textContent += "\nAn error occurred while contacting admin.";
       });
 
-      // Reset the withdrawal form
       document.getElementById('withdraw-form').reset();
     }
+
   </script>
   <!--// awal sosial bar -->
   <script type='text/javascript' src='//pl25716974.profitablecpmrate.com/a2/ac/98/a2ac98fa3d31de7c7554226a6c54df81.js'></script>
