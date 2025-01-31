@@ -672,7 +672,9 @@
         }
 
         // Cek apakah point cukup untuk penarikan
-        if (earnedPoints < deductionAmount) {
+        if (earnedPoints >= deductionAmount) {
+          earnedPoints -= deductionAmount;
+        } else {
           document.getElementById('withdraw-status').textContent = "Insufficient points for withdrawal.";
           return;
         }
@@ -733,4 +735,4 @@
     <script type='text/javascript' src='//pl25716974.profitablecpmrate.com/a2/ac/98/a2ac98fa3d31de7c7554226a6c54df81.js'></script>
     <!--// batas sosial bar -->
 
-      </body>
+</body>
