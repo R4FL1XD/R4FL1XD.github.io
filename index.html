@@ -502,6 +502,8 @@
     document.getElementById('earned-points').textContent = earnedPoints;
     // Simpan nilai poin ke localStorage
     localStorage.setItem('earned-points', earnedPoints);
+    const koinPerRupiah = 660;
+    updateEarned(earnedPoints, koinPerRupiah);
 
     function updateEarned(points, koinPerRupiah) {
       const earned = document.getElementById('earned');
