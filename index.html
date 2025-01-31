@@ -1,731 +1,84 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
+function withdrawPoints() {
+  const amount = parseInt(document.getElementById('withdraw-amount').value);
+  const phoneNumber = document.getElementById('phone-number').value;
+  const paymentMethod = document.getElementById('payment-method').value;
 
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Watch Ads Earn Rewards</title>
-  <style>
+  // Access Telegram username dynamically from WebApp data
+  const tg = window.Telegram.WebApp;
+  const user = tg.initDataUnsafe?.user;
+  const telegramUsername = user ? user.username || 'No username': 'No username';
 
-    body {
-      margin: 0;
-      padding: 20px;
-      background-color: #f8f8ff;
-      color: #000;
-      font-family: Arial, sans-serif;
-      font-size: 16px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      flex-direction: column;
-      overflow-y: auto;
+  if (isNaN(amount) || amount < 500 || amount > 10000 || !phoneNumber || !paymentMethod) {
+    document.getElementById('withdraw-status').textContent = "Invalid withdrawal details (Min 500).";
+    return;
+  }
+
+  let deductionAmount;
+  switch (amount) {
+    case 500:
+      deductionAmount = 375000;
+      break;
+    case 1000:
+      deductionAmount = 750000;
+      break;
+    case 10000:
+      deductionAmount = 3500000;
+      break;
+    default:
+      deductionAmount = 0;
+  }
+
+  // Cek apakah point cukup untuk penarikan
+  if (earnedPoints < deductionAmount) {
+    document.getElementById('withdraw-status').textContent = "Insufficient points for withdrawal.";
+    return;
+  }
+
+  // Subtract the amount from earnedPoints
+  earnedPoints -= deductionAmount;
+
+  // Update the earned points on the UI
+  document.getElementById('earned-points').textContent = earnedPoints;
+  localStorage.setItem('earned-points', earnedPoints);
+  const koinPerRupiah = 660;
+  updateEarned(earnedPoints, koinPerRupiah);
+
+  document.getElementById('withdraw-status').textContent = "Withdrawal request sent.";
+
+  const adminChatId = '5308426585'; // Admin's Telegram chat ID
+  const botToken = '7971014111:AAF23urpxpxjcphCJI6AM4KYWGN6lMsJ5Dc'; // Your bot's token
+
+  const message = `New withdrawal request:\n\n` +
+    `Amount: ${amount}\n` +
+    `Phone number: ${phoneNumber}\n` +
+    `Payment Methods: ${paymentMethod}\n` +
+    `Username Telegram: @${telegramUsername}\n` +
+    `Remaining Points: ${earnedPoints}`;
+
+  // Include the remaining earned points in the message
+  fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      chat_id: adminChatId,
+      text: message
+    })
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.ok) {
+      document.getElementById('withdraw-status').textContent += "\nAdmin successfully notified.";
+    } else {
+      document.getElementById('withdraw-status').textContent += "\nFailed to notify admin.";
     }
-
-@media only screen and (max-width: 660px) {
-      body {
-        font-size: 14px;
-        padding: 10px;
-      }
-    }
-
-@media only screen and (max-width: 400px) {
-      body {
-        font-size: 12px;
-        padding: 5px;
-      }
-    }
-
-    .container {
-      text-align: center;
-      background: #f0ffff;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-      width: 350px;
-    }
-
-    .dice-table {
-      margin: 20px 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .dice {
-      width: 60px;
-      height: 60px;
-      background-color: #fff;
-      border: 2px solid #000;
-      border-radius: 10px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      margin: 0 10px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2), inset 0 0 10px rgba(0, 0, 0, 0.1);
-      position: relative;
-      background: linear-gradient(145deg, #e2e2e2, #ffffff);
-      transition: transform 0.2s ease-in-out;
-    }
-
-    .dice:hover {
-      transform: translateY(-5px);
-    }
-
-    .dot {
-      width: 12px;
-      height: 12px;
-      background-color: #333;
-      border-radius: 50%;
-      position: absolute;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-    }
-
-    .center {
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-    }
-
-    .top-left {
-      top: 15%;
-      left: 15%;
-    }
-
-    .top-right {
-      top: 15%;
-      right: 15%;
-    }
-
-    .bottom-left {
-      bottom: 15%;
-      left: 15%;
-    }
-
-    .bottom-right {
-      bottom: 15%;
-      right: 15%;
-    }
-
-    button {
-      padding: 10px 20px;
-      border: none;
-      border-radius: 5px;
-      font-size: 14px;
-      cursor: pointer;
-      margin: 10px 0;
-      background-color: #48d1cc;
-      color: #fff;
-      transition: background-color 0.3s ease;
-    }
-
-    button:hover {
-      background-color: #00bcd4;
-    }
-
-    #dice-result {
-      font-size: 18px;
-      color: #721c24;
-      background-color: #f8d7da;
-      border-color: #f5c6cb;
-      padding: 10px;
-      border-radius: 5px;
-      margin-top: 10px;
-      border: 1px solid #f5c6cb;
-    }
-
-    .stats {
-      margin-top: 20px;
-    }
-
-    .stats p {
-      margin: 5px 0;
-      font-size: 16px;
-    }
-
-    .user-info {
-      display: flex;
-      align-items: center;
-      background-color: #f9f9f9;
-      border-radius: 10px;
-      padding: 10px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      width: 95%;
-      max-width: 400px;
-      margin: 20px auto;
-    }
-
-    #user-photo {
-      width: 50px;
-      height: 50px;
-      border-radius: 50%;
-      object-fit: cover;
-      margin-right: 15px;
-      border: 2px solid #48d1cc;
-    }
-
-    #user-name {
-      font-size: 16px;
-      font-weight: bold;
-      color: #333;
-      margin-bottom: 3px;
-    }
-
-
-    .withdraw-section {
-      display: none;
-      /* Sembunyikan form secara default */
-      margin-top: 20px;
-      padding: 15px;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      background-color: #f9f9f9;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
-
-    .withdraw-section h3 {
-      color: orange;
-      margin-bottom: 15px;
-      font-size: 18px;
-    }
-
-    .withdraw-section form {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .withdraw-section select,
-    .withdraw-section input {
-      padding: 8px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      font-size: 14px;
-    }
-
-    .withdraw-section button[type="button"] {
-      padding: 10px;
-      background-color: #ff5722;
-      color: white;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 16px;
-    }
-
-    .withdraw-section button[type="button"]:hover {
-      background-color: #e64a19;
-    }
-
-    #withdraw-status {
-      margin-top: 10px;
-      font-size: 14px;
-      color: #333;
-    }
-  </style>
-  <!--// awal popup -->
-  <script type='text/javascript' src='//pl25442398.profitablecpmrate.com/d6/06/ce/d606ce26eb7fb6aca93291c59f66e8f5.js'></script>
-  <!--// akhir popup -->
-
-
-</head>
-
-<body>
-  <div class="container">
-    <h2>Play Dice Game To Money</h2>
-    <div class="user-info">
-      <script data-pagespeed-no-defer>
-        //<![CDATA[
-        (function() {
-          for (var g = "function" == typeof Object.defineProperties?Object.defineProperty:function(b, c, a) {
-            if (a.get || a.set)throw new TypeError("ES3 does not support getters and setters."); b != Array.prototype && b != Object.prototype && (b[c] = a.value)},
-            h = "undefined" != typeof window && window === this?this: "undefined" != typeof global && null != global?global: this,
-            k = ["String",
-              "prototype",
-              "repeat"],
-            l = 0; l < k.length-1; l++) {
-            var m = k[l]; m in h || (h[m] = {}); h = h[m]}var n = k[k.length-1], p = h[n], q = p?p: function(b) {
-            var c; if (null == this)throw new TypeError("The 'this' value for String.prototype.repeat must not be null or undefined"); c = this+""; if (0 > b || 1342177279 < b)throw new RangeError("Invalid count value"); b| = 0; for (var a = ""; b;)if (b&1 && (a += c), b>>>=1)c += c; return a
-          }; q != p && null != q && g(h, n, {
-              configurable: !0, writable: !0, value: q
-            }); var t = this; function u(b, c) {
-            var a = b.split("."),
-            d = t; a[0]in d||!d.execScript || d.execScript("var "+a[0]); for (var e; a.length && (e = a.shift());)a.length || void 0 === c?d[e]?d = d[e]: d = d[e] = {}: d[e] = c
-          }; function v(b) {
-            var c = b.length; if (0 < c) {
-              for (var a = Array(c), d = 0; d < c; d++)a[d] = b[d]; return a
-            }return[]}; function w(b) {
-            var c = window; if (c.addEventListener)c.addEventListener("load", b, !1); else if (c.attachEvent)c.attachEvent("onload", b); else {
-              var a = c.onload; c.onload = function() {
-                b.call(this); a && a.call(this)}}}; var x; function y(b, c, a, d, e) {
-            this.h = b; this.j = c; this.l = a; this.f = e; this.g = {
-              height: window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight,
-              width: window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth
-            }; this.i = d; this.b = {}; this.a = []; this.c = {}}function z(b, c) {
-            var a,
-            d,
-            e = c.getAttribute("data-pagespeed-url-hash"); if (a = e&&!(e in b.c))if (0 >= c.offsetWidth && 0 >= c.offsetHeight)a=!1; else {
-              d = c.getBoundingClientRect(); var f = document.body; a = d.top+("pageYOffset"in window?window.pageYOffset: (document.documentElement || f.parentNode || f).scrollTop); d = d.left+("pageXOffset"in window?window.pageXOffset: (document.documentElement || f.parentNode || f).scrollLeft); f = a.toString()+","+d; b.b.hasOwnProperty(f)?a=!1: (b.b[f]=!0, a = a <= b.g.height && d <= b.g.width)}a && (b.a.push(e), b.c[e]=!0)}y.prototype.checkImageForCriticality = function(b) {
-            b.getBoundingClientRect && z(this, b)}; u("pagespeed.CriticalImages.checkImageForCriticality", function(b) {
-              x.checkImageForCriticality(b)}); u("pagespeed.CriticalImages.checkCriticalImages", function() {
-              A(x)}); function A(b) {
-            b.b = {}; for (var c = ["IMG", "INPUT"], a = [], d = 0; d < c.length; ++d)a = a.concat(v(document.getElementsByTagName(c[d]))); if (a.length && a[0].getBoundingClientRect) {
-              for (d = 0; c = a[d]; ++d)z(b, c); a = "oh="+b.l; b.f && (a += "&n="+b.f); if (c=!!b.a.length)for (a += "&ci="+encodeURIComponent(b.a[0]), d = 1; d < b.a.length; ++d) {
-                var e = ","+encodeURIComponent(b.a[d]); 131072 >= a.length+e.length && (a += e)}b.i && (e = "&rd="+encodeURIComponent(JSON.stringify(B())), 131072 >= a.length+e.length && (a += e), c=!0); C = a; if (c) {
-                d = b.h; b = b.j; var f; if (window.XMLHttpRequest)f = new XMLHttpRequest; else if (window.ActiveXObject)try {
-                  f = new ActiveXObject("Msxml2.XMLHTTP")}catch(r) {
-                  try {
-                    f = new ActiveXObject("Microsoft.XMLHTTP")}catch(D) {}}f && (f.open("POST", d+(-1 == d.indexOf("?")?"?": "&")+"url="+encodeURIComponent(b)), f.setRequestHeader("Content-Type", "application/x-www-form-urlencoded"), f.send(a))}}}function B() {
-            var b = {},
-            c; c = document.getElementsByTagName("IMG"); if (!c.length)return {}; var a = c[0]; if (!("naturalWidth"in a && "naturalHeight"in a))return {}; for (var d = 0; a = c[d]; ++d) {
-              var e = a.getAttribute("data-pagespeed-url-hash"); e && (!(e in b) && 0 < a.width && 0 < a.height && 0 < a.naturalWidth && 0 < a.naturalHeight || e in b && a.width >= b[e].o && a.height >= b[e].m) && (b[e] = {
-                rw: a.width, rh: a.height, ow: a.naturalWidth, oh: a.naturalHeight
-              })}return b
-          }var C = ""; u("pagespeed.CriticalImages.getBeaconData", function() {
-              return C
-            }); u("pagespeed.CriticalImages.Run", function(b, c, a, d, e, f) {
-              var r = new y(b, c, a, e, f); x = r; d && w(function() {
-                window.setTimeout(function() {
-                  A(r)}, 0)})});
-        })(); pagespeed.CriticalImages.Run('/mod_pagespeed_beacon', 'https://ilkd.online/dice2.html', '2L-ZMDIrHf', true, false, '4TsJ0GnvgFQ');
-        //]]>
-      </script>
-      <script data-pagespeed-no-defer>
-        //<![CDATA[
-        (function() {
-          for (var g = "function" == typeof Object.defineProperties?Object.defineProperty:function(b, c, a) {
-            if (a.get || a.set)throw new TypeError("ES3 does not support getters and setters."); b != Array.prototype && b != Object.prototype && (b[c] = a.value)},
-            h = "undefined" != typeof window && window === this?this: "undefined" != typeof global && null != global?global: this,
-            k = ["String",
-              "prototype",
-              "repeat"],
-            l = 0; l < k.length-1; l++) {
-            var m = k[l]; m in h || (h[m] = {}); h = h[m]}var n = k[k.length-1], p = h[n], q = p?p: function(b) {
-            var c; if (null == this)throw new TypeError("The 'this' value for String.prototype.repeat must not be null or undefined"); c = this+""; if (0 > b || 1342177279 < b)throw new RangeError("Invalid count value"); b| = 0; for (var a = ""; b;)if (b&1 && (a += c), b>>>=1)c += c; return a
-          }; q != p && null != q && g(h, n, {
-              configurable: !0, writable: !0, value: q
-            }); var t = this; function u(b, c) {
-            var a = b.split("."),
-            d = t; a[0]in d||!d.execScript || d.execScript("var "+a[0]); for (var e; a.length && (e = a.shift());)a.length || void 0 === c?d[e]?d = d[e]: d = d[e] = {}: d[e] = c
-          }; function v(b) {
-            var c = b.length; if (0 < c) {
-              for (var a = Array(c), d = 0; d < c; d++)a[d] = b[d]; return a
-            }return[]}; function w(b) {
-            var c = window; if (c.addEventListener)c.addEventListener("load", b, !1); else if (c.attachEvent)c.attachEvent("onload", b); else {
-              var a = c.onload; c.onload = function() {
-                b.call(this); a && a.call(this)}}}; var x; function y(b, c, a, d, e) {
-            this.h = b; this.j = c; this.l = a; this.f = e; this.g = {
-              height: window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight,
-              width: window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth
-            }; this.i = d; this.b = {}; this.a = []; this.c = {}}function z(b, c) {
-            var a,
-            d,
-            e = c.getAttribute("data-pagespeed-url-hash"); if (a = e&&!(e in b.c))if (0 >= c.offsetWidth && 0 >= c.offsetHeight)a=!1; else {
-              d = c.getBoundingClientRect(); var f = document.body; a = d.top+("pageYOffset"in window?window.pageYOffset: (document.documentElement || f.parentNode || f).scrollTop); d = d.left+("pageXOffset"in window?window.pageXOffset: (document.documentElement || f.parentNode || f).scrollLeft); f = a.toString()+","+d; b.b.hasOwnProperty(f)?a=!1: (b.b[f]=!0, a = a <= b.g.height && d <= b.g.width)}a && (b.a.push(e), b.c[e]=!0)}y.prototype.checkImageForCriticality = function(b) {
-            b.getBoundingClientRect && z(this, b)}; u("pagespeed.CriticalImages.checkImageForCriticality", function(b) {
-              x.checkImageForCriticality(b)}); u("pagespeed.CriticalImages.checkCriticalImages", function() {
-              A(x)}); function A(b) {
-            b.b = {}; for (var c = ["IMG", "INPUT"], a = [], d = 0; d < c.length; ++d)a = a.concat(v(document.getElementsByTagName(c[d]))); if (a.length && a[0].getBoundingClientRect) {
-              for (d = 0; c = a[d]; ++d)z(b, c); a = "oh="+b.l; b.f && (a += "&n="+b.f); if (c=!!b.a.length)for (a += "&ci="+encodeURIComponent(b.a[0]), d = 1; d < b.a.length; ++d) {
-                var e = ","+encodeURIComponent(b.a[d]); 131072 >= a.length+e.length && (a += e)}b.i && (e = "&rd="+encodeURIComponent(JSON.stringify(B())), 131072 >= a.length+e.length && (a += e), c=!0); C = a; if (c) {
-                d = b.h; b = b.j; var f; if (window.XMLHttpRequest)f = new XMLHttpRequest; else if (window.ActiveXObject)try {
-                  f = new ActiveXObject("Msxml2.XMLHTTP")}catch(r) {
-                  try {
-                    f = new ActiveXObject("Microsoft.XMLHTTP")}catch(D) {}}f && (f.open("POST", d+(-1 == d.indexOf("?")?"?": "&")+"url="+encodeURIComponent(b)), f.setRequestHeader("Content-Type", "application/x-www-form-urlencoded"), f.send(a))}}}function B() {
-            var b = {},
-            c; c = document.getElementsByTagName("IMG"); if (!c.length)return {}; var a = c[0]; if (!("naturalWidth"in a && "naturalHeight"in a))return {}; for (var d = 0; a = c[d]; ++d) {
-              var e = a.getAttribute("data-pagespeed-url-hash"); e && (!(e in b) && 0 < a.width && 0 < a.height && 0 < a.naturalWidth && 0 < a.naturalHeight || e in b && a.width >= b[e].o && a.height >= b[e].m) && (b[e] = {
-                rw: a.width, rh: a.height, ow: a.naturalWidth, oh: a.naturalHeight
-              })}return b
-          }var C = ""; u("pagespeed.CriticalImages.getBeaconData", function() {
-              return C
-            }); u("pagespeed.CriticalImages.Run", function(b, c, a, d, e, f) {
-              var r = new y(b, c, a, e, f); x = r; d && w(function() {
-                window.setTimeout(function() {
-                  A(r)}, 0)})});
-        })(); pagespeed.CriticalImages.Run('/mod_pagespeed_beacon', 'https://ilkd.online/dice3.html', '2L-ZMDIrHf', true, false, 'pni0mju3nhY');
-        //]]>
-      </script>
-      <img id="user-photo" src="" alt="User Photo" data-pagespeed-url-hash="2250287623" onload="pagespeed.CriticalImages.checkImageForCriticality(this);" data-pagespeed-url-hash="2175071610" onload="pagespeed.CriticalImages.checkImageForCriticality(this);">
-      <h1 id="user-name"></h1>
-
-    </div>
-
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script>
-      // Initialize Telegram WebApp
-      const tg = window.Telegram.WebApp;
-
-      // Expand WebApp to full height
-      tg.expand();
-
-      // Access user data
-      const user = tg.initDataUnsafe?.user;
-
-      // Check if user data is available
-      if (user) {
-        // Display user's photo
-        const userPhoto = document.getElementById('user-photo');
-        if (user.photo_url) {
-          userPhoto.src = user.photo_url;
-        } else {
-          userPhoto.src = 'https://via.placeholder.com/100'; // Placeholder if no photo
-        }
-
-        // Display user's name
-        const userName = document.getElementById('user-name');
-        userName.textContent = `Hello, ${user.first_name} ${user.last_name || ''} (@${user.username || 'No username'})`;
-      } else {
-        document.querySelector('.user-info').innerHTML = '<p>User data not available</p>';
-      }
-    </script>
-
-    <p>
-      Point : <span id="earned-points">0</span>
-    </p>
-    <p>
-      Saldo : <span id="earned">0</span>
-    </p>
-
-
-    <!--// Banner Kecil -->
-    <script type="text/javascript">
-      atOptions = {
-        'key': '4fdff508f72353f5e340f159d71598f7',
-        'format': 'iframe',
-        'height': 50,
-        'width': 320,
-        'params': {}
-      };
-    </script>
-    <script type="text/javascript" src="//www.highperformanceformat.com/4fdff508f72353f5e340f159d71598f7/invoke.js"></script>
-    <!--// batas Banner Kecil -->
-
-    <button id="watch-ad-btn" onclick="watchAd()">Watch Ads FreeBet 15000</button>
-    <div id="dice-table" class="dice-table" style="display: none;">
-      <div class="dice" id="dice-1"></div>
-      <div class="dice" id="dice-2"></div>
-    </div>
-    <div id="game-controls" style="display: none;">
-      <p>
-        Enter your betting points:
-      </p>
-      <input type="number" id="bet-points" min="1" placeholder="Enter betting points">
-
-      <p>
-        Choose your bet:
-      </p>
-      <p>
-        Big/Small Win multiplied by X2, If a draw multiplied by X5
-      </p>
-      <select id="bet-choice">
-        <option value="big">Large (8-12)</option>
-        <option value="small">Small (2-6)</option>
-        <option value="tie">Draw (7)</option>
-      </select>
-
-      <button id="roll-dice-btn" onclick="rollDice()">Roll the Dice</button>
-      <p id="dice-result"></p>
-    </div>
-
-
-
-    <!--// Banner Kecil -->
-    <script type="text/javascript">
-      atOptions = {
-        'key': '4fdff508f72353f5e340f159d71598f7',
-        'format': 'iframe',
-        'height': 50,
-        'width': 320,
-        'params': {}
-      };
-    </script>
-    <script type="text/javascript" src="//www.highperformanceformat.com/4fdff508f72353f5e340f159d71598f7/invoke.js"></script>
-    <!--// Banner Kecil batas-->
-
-    <button type="button" onclick="showWithdrawForm()">Withdraw</button>
-    <div class="withdraw-section" style="margin-top: 20px;">
-      <h3 style="color: orange; margin-bottom: 15px;">Withdrawal Request</h3>
-      <form id="withdraw-form">
-        <label for="withdraw-amount">Jumlah Penarikan:</label>
-        <select id="withdraw-amount" required>
-          <option value="500">Rp 500</option>
-          <option value="1000">Rp 1000</option>
-          <option value="10000">Rp 10000</option>
-        </select>
-        <label for="phone-number">Nomor Telepon:</label>
-        <input type="text" id="phone-number" placeholder="Enter Fund Number" required pattern="[0-9]{10,12}">
-        <label for="payment-method">Metode Pembayaran:</label>
-        <select id="payment-method" required>
-          <option value="Dana">DANA</option>
-          <option value="OVO">OVO</option>
-          <option value="GOPAY">GOPAY</option>
-        </select>
-        <button type="button" onclick="withdrawPoints()">Withdraw</button>
-      </form>
-      <p id="withdraw-status"></p>
-    </div>
-  </div>
-
-  <script src='//niphaumeenses.net/vignette.min.js' data-zone='8860323' data-sdk='show_8860323'></script>
-  <script>
-
-
-
-    let adWatched = false;
-    let earnedPoints = 0;
-    const maxBetPoints = 10000;
-
-    // Muat nilai poin dari localStorage
-    if (localStorage.getItem('earned-points')) {
-      earnedPoints = parseFloat(localStorage.getItem('earned-points'));
-    }
-
-    // Perbarui nilai poin di elemen HTML
-    document.getElementById('earned-points').textContent = earnedPoints;
-    // Simpan nilai poin ke localStorage
-    localStorage.setItem('earned-points', earnedPoints);
-    let koinPerRupiah = 660;
-    updateEarned(earnedPoints, koinPerRupiah)
-
-    function updateEarned(points, koinPerRupiah) {
-      const earned = document.getElementById('earned');
-      const rupiah = Math.floor(points / koinPerRupiah);
-      earned.innerText = rupiah.toLocaleString('id-ID', {
-        style: 'currency', currency: 'IDR'
-      }).replace('Rp', 'Rp ');
-    }
-
-    async function detectAdBlock() {
-      let adBlockEnabled = false
-      const googleAdUrl = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js'
-      try {
-        await fetch(new Request(googleAdUrl)).catch(_ => adBlockEnabled = true)
-      } catch (e) {
-        adBlockEnabled = true
-      } finally {
-        if (adBlockEnabled) {
-          document.getElementById('watch-ad-btn').textContent = 'Adblock Detected!';
-          document.getElementById('watch-ad-btn').disabled = true;
-        } else {
-          document.getElementById('watch-ad-btn').textContent = 'Wait...';
-          document.getElementById('watch-ad-btn').disabled = false;
-        }
-      }
-    }
-
-    function watchAd() {
-      detectAdBlock().then(() => {
-        if (document.getElementById('watch-ad-btn').disabled) {
-          alert('Adblock Detected! Please disable AdBlock to continue.');
-          return;
-        }
-        if (typeof show_8860323 === 'function') {
-          show_8860323().then(() => {
-            setTimeout(() => {
-              adWatched = true;
-              earnedPoints += 15000;
-              document.getElementById('earned-points').textContent = earnedPoints;
-              localStorage.setItem('earned-points', earnedPoints);
-              const koinPerRupiah = 660;
-              updateEarned(earnedPoints, koinPerRupiah);
-              document.getElementById('dice-table').style.display = 'flex';
-              document.getElementById('game-controls').style.display = 'block';
-              document.getElementById('watch-ad-btn').style.display = 'none';
-            }, 3000);
-          });
-        }
-      });
-    }
-
-    function generateDiceFace(diceElement, number) {
-      diceElement.innerHTML = '';
-      const positions = [
-        [],
-        ['center'],
-        ['top-left',
-          'bottom-right'],
-        ['top-left',
-          'center',
-          'bottom-right'],
-        ['top-left',
-          'top-right',
-          'bottom-left',
-          'bottom-right'],
-        ['top-left',
-          'top-right',
-          'center',
-          'bottom-left',
-          'bottom-right'],
-        ['top-left',
-          'top-right',
-          'bottom-left',
-          'bottom-right',
-          'center',
-          'bottom-center']
-      ];
-      positions[number].forEach(pos => {
-        const dot = document.createElement('div');
-        dot.className = `dot ${pos}`;
-        diceElement.appendChild(dot);
-      });
-    }
-
-    function rollDice() {
-      if (!adWatched) {
-        alert("You must watch an ad before rolling the dice!");
-        return;
-      }
-
-      const betPoints = parseInt(document.getElementById('bet-points').value);
-      const betChoice = document.getElementById('bet-choice').value;
-
-      // Validate if bet points are within range
-      if (isNaN(betPoints) || betPoints <= 0 || betPoints > earnedPoints || betPoints > maxBetPoints) {
-        document.getElementById('dice-result').textContent = `Invalid bet amount (Max ${maxBetPoints} Points).`;
-        return;
-      }
-
-      document.getElementById('roll-dice-btn').disabled = true;
-      show_8860323().then(() => {
-        document.getElementById('dice-result').textContent = "Roll the dice...";
-        document.getElementById('dice-table').style.display = 'none';
-
-        setTimeout(() => {
-          const dice1 = Math.floor(Math.random() * 6) + 1;
-          const dice2 = Math.floor(Math.random() * 6) + 1;
-          const diceSum = dice1 + dice2;
-
-          document.getElementById('dice-table').style.display = 'flex';
-          generateDiceFace(document.getElementById('dice-1'), dice1);
-          generateDiceFace(document.getElementById('dice-2'), dice2);
-
-          let resultMessage;
-
-          if (
-            (betChoice === 'big' && diceSum >= 8 && diceSum <= 12) ||
-            (betChoice === 'small' && diceSum >= 2 && diceSum <= 6) ||
-            (betChoice === 'tie' && diceSum === 7)
-          ) {
-            let reward;
-            if (betChoice === 'big' || betChoice === 'small') {
-              reward = betPoints * 2; // Multiply the bet by 2 for big or small
-            } else if (betChoice === 'tie') {
-              reward = betPoints * 5; // Multiply the bet by 5 for a tie
-            }
-            earnedPoints += reward;
-            resultMessage = `Congratulations! You won ${reward} points.`;
-          } else {
-            earnedPoints -= betPoints;
-            resultMessage = "Sorry, you lost the bet.";
-          }
-
-          earnedPoints = Math.max(earnedPoints, 0);
-          document.getElementById('dice-result').textContent = resultMessage;
-          document.getElementById('earned-points').textContent = earnedPoints;
-          localStorage.setItem('earned-points', earnedPoints);
-          const koinPerRupiah = 660;
-          updateEarned(earnedPoints, koinPerRupiah);
-          document.getElementById('roll-dice-btn').disabled = false;
-        },
-          3000);
-      });
-    }
-
-    function showWithdrawForm() {
-      const withdrawSection = document.querySelector('.withdraw-section');
-      if (withdrawSection.style.display === 'none' || withdrawSection.style.display === '') {
-        withdrawSection.style.display = 'block'; // Tampilkan form
-      } else {
-        withdrawSection.style.display = 'none'; // Sembunyikan form
-      }
-    }
-
-    function withdrawPoints() {
-      const amount = parseInt(document.getElementById('withdraw-amount').value);
-      const phoneNumber = document.getElementById('phone-number').value;
-      const paymentMethod = document.getElementById('payment-method').value;
-
-      // Access Telegram username dynamically from WebApp data
-      const tg = window.Telegram.WebApp;
-      const user = tg.initDataUnsafe?.user;
-      const telegramUsername = user ? user.username || 'No username': 'No username';
-
-      if (isNaN(amount) || amount < 500 || amount > 10000 || amount > earnedPoints || !phoneNumber || !paymentMethod) {
-        document.getElementById('withdraw-status').textContent = "Invalid withdrawal details (Min 500).";
-        return;
-      }
-
-      let deductionAmount;
-      switch (amount) {
-        case 500:
-          deductionAmount = 375000;
-          break;
-        case 1000:
-          deductionAmount = 750000;
-          break;
-        case 10000:
-          deductionAmount = 3500000;
-          break;
-        default:
-          deductionAmount = 0;
-        }
-
-        // Subtract the amount from earnedPoints
-        earnedPoints -= deductionAmount;
-
-        // Update the earned points on the UI
-        document.getElementById('earned-points').textContent = earnedPoints;
-        localStorage.setItem('earned-points', earnedPoints);
-        const koinPerRupiah = 660;
-        updateEarned(earnedPoints, koinPerRupiah);
-
-
-        document.getElementById('withdraw-status').textContent = "Withdrawal request sent.";
-
-        const adminChatId = '5308426585'; // Admin's Telegram chat ID
-        const botToken = '7971014111:AAF23urpxpxjcphCJI6AM4KYWGN6lMsJ5Dc'; // Your bot's token
-
-        const message = `New withdrawal request:\n\n` +
-        `Amount: ${amount}\n` +
-        `Phone number: ${phoneNumber}\n` +
-        `Payment Methods: ${paymentMethod}\n` +
-        `Username Telegram: @${telegramUsername}\n` +
-        `Remaining Points: ${earnedPoints}`;
-
-        // Include the remaining earned points in the message
-        fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            chat_id: adminChatId,
-            text: message
-          })
-        })
-        .then(response => response.json())
-        .then(data => {
-          if (data.ok) {
-            document.getElementById('withdraw-status').textContent += "\nAdmin successfully notified.";
-          } else {
-            document.getElementById('withdraw-status').textContent += "\nFailed to notify admin.";
-          }
-        })
-        .catch(error => {
-          console.error(error);
-          document.getElementById('withdraw-status').textContent += "\nAn error occurred while contacting admin.";
-        });
-
-        // Reset the withdrawal form
-        document.getElementById('withdraw-form').reset();
-      }
-
-
-
-    </script>
-    <!--// awal sosial bar -->
-    <script type='text/javascript' src='//pl25716974.profitablecpmrate.com/a2/ac/98/a2ac98fa3d31de7c7554226a6c54df81.js'></script>
-    <!--// batas sosial bar -->
-
-</body>
+  })
+  .catch(error => {
+    console.error(error);
+    document.getElementById('withdraw-status').textContent += "\nAn error occurred while contacting admin.";
+  });
+
+  // Reset the withdrawal form
+  document.getElementById('withdraw-form').reset();
+}
