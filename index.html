@@ -495,6 +495,7 @@
         style: 'currency', currency: 'IDR'
       }).replace('Rp', 'Rp ');
     }
+
     async function detectAdBlock() {
       let adBlockEnabled = false
       const googleAdUrl = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js'
@@ -507,29 +508,34 @@
           document.getElementById('watch-ad-btn').textContent = 'Adblock Detected!';
           document.getElementById('watch-ad-btn').disabled = true;
         } else {
-          document.getElementById('watch-ad-btn').textContent = 'Watch Ad';
+          document.getElementById('watch-ad-btn').textContent = 'Wait...';
           document.getElementById('watch-ad-btn').disabled = false;
         }
       }
     }
 
     function watchAd() {
-      detectAdBlock()
-      if (typeof show_8860323 === 'function') {
-        show_8860323().then(() => {
-          setTimeout(() => {
-            adWatched = true;
-            earnedPoints += 15000;
-            document.getElementById('earned-points').textContent = earnedPoints;
-            localStorage.setItem('earned-points', earnedPoints);
-            const koinPerRupiah = 660;
-            updateEarned(earnedPoints, koinPerRupiah);
-            document.getElementById('dice-table').style.display = 'flex';
-            document.getElementById('game-controls').style.display = 'block';
-            document.getElementById('watch-ad-btn').style.display = 'none';
-          }, 3000);
-        });
-      }
+      detectAdBlock().then(() => {
+        if (document.getElementById('watch-ad-btn').disabled) {
+          alert('Adblock Detected! Please disable AdBlock to continue.');
+          return;
+        }
+        if (typeof show_8860323 === 'function') {
+          show_8860323().then(() => {
+            setTimeout(() => {
+              adWatched = true;
+              earnedPoints += 15000;
+              document.getElementById('earned-points').textContent = earnedPoints;
+              localStorage.setItem('earned-points', earnedPoints);
+              const koinPerRupiah = 660;
+              updateEarned(earnedPoints, koinPerRupiah);
+              document.getElementById('dice-table').style.display = 'flex';
+              document.getElementById('game-controls').style.display = 'block';
+              document.getElementById('watch-ad-btn').style.display = 'none';
+            }, 3000);
+          });
+        }
+      });
     }
 
     function generateDiceFace(diceElement, number) {
