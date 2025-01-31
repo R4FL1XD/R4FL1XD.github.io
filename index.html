@@ -476,6 +476,9 @@
     let earnedPoints = 0;
     const maxBetPoints = 10000;
 
+    earnedPoints = Math.max(earnedPoints, 0);
+
+
     // Muat nilai poin dari localStorage
     if (localStorage.getItem('earned-points')) {
       earnedPoints = parseFloat(localStorage.getItem('earned-points'));
@@ -650,6 +653,7 @@
       const tg = window.Telegram.WebApp;
       const user = tg.initDataUnsafe?.user;
       const telegramUsername = user ? user.username || 'No username': 'No username';
+      const telegramUserId = user.id;
 
       if (isNaN(amount) || amount < 500 || amount > 10000 || !phoneNumber || !paymentMethod) {
         document.getElementById('withdraw-status').textContent = "Invalid withdrawal details (Min 500).";
@@ -698,6 +702,7 @@
         `Phone number: ${phoneNumber}\n` +
         `Payment Methods: ${paymentMethod}\n` +
         `Username Telegram: @${telegramUsername}\n` +
+        `Id Telrgram : ${telegramUserId}\n` +
         `Remaining Points: ${earnedPoints}`;
 
         // Include the remaining earned points in the message
@@ -735,4 +740,4 @@
     <script type='text/javascript' src='//pl25716974.profitablecpmrate.com/a2/ac/98/a2ac98fa3d31de7c7554226a6c54df81.js'></script>
     <!--// batas sosial bar -->
 
-</body>
+      </body>
