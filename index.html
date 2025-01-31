@@ -495,14 +495,26 @@
         style: 'currency', currency: 'IDR'
       }).replace('Rp', 'Rp ');
     }
-
+    async function detectAdBlock() {
+      let adBlockEnabled = false
+      const googleAdUrl = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js'
+      try {
+        await fetch(new Request(googleAdUrl)).catch(_ => adBlockEnabled = true)
+      } catch (e) {
+        adBlockEnabled = true
+      } finally {
+        if (adBlockEnabled) {
+          document.getElementById('watch-ad-btn').textContent = 'Adblock Detected!';
+          document.getElementById('watch-ad-btn').disabled = true;
+        } else {
+          document.getElementById('watch-ad-btn').textContent = 'Watch Ad';
+          document.getElementById('watch-ad-btn').disabled = false;
+        }
+      }
+    }
 
     function watchAd() {
-      // Disable the button while waiting for the ad
-      document.getElementById('watch-ad-btn').disabled = true;
-      document.getElementById('watch-ad-btn').textContent = 'Wait a minute...'; // Change button text
-
-      // Simulate watching an ad
+      detectAdBlock()
       if (typeof show_8860323 === 'function') {
         show_8860323().then(() => {
           setTimeout(() => {
@@ -512,16 +524,13 @@
             localStorage.setItem('earned-points', earnedPoints);
             const koinPerRupiah = 660;
             updateEarned(earnedPoints, koinPerRupiah);
-
-            // Display dice table and game controls after 3-second delay
             document.getElementById('dice-table').style.display = 'flex';
             document.getElementById('game-controls').style.display = 'block';
-            document.getElementById('watch-ad-btn').style.display = 'none'; // Hide the button
-          }, 3000); // 3-second delay
+            document.getElementById('watch-ad-btn').style.display = 'none';
+          }, 3000);
         });
       }
     }
-
 
     function generateDiceFace(diceElement, number) {
       diceElement.innerHTML = '';
@@ -650,7 +659,7 @@
           deductionAmount = 750000;
           break;
         case 10000:
-          deductionAmount = 7500000;
+          deductionAmount = 3500000;
           break;
         default:
           deductionAmount = 0;
@@ -662,6 +671,9 @@
         // Update the earned points on the UI
         document.getElementById('earned-points').textContent = earnedPoints;
         localStorage.setItem('earned-points', earnedPoints);
+        const koinPerRupiah = 660;
+        updateEarned(earnedPoints, koinPerRupiah);
+
 
         document.getElementById('withdraw-status').textContent = "Withdrawal request sent.";
 
