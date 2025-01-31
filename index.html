@@ -354,13 +354,13 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script>
       // Initialize Telegram WebApp
-      const tg = window.Telegram.WebApp;
+      const tgrp = window.Telegram.WebApp;
 
       // Expand WebApp to full height
-      tg.expand();
+      tgrp.expand();
 
       // Access user data
-      const user = tg.initDataUnsafe?.user;
+      const user = tgrp.initDataUnsafe?.user;
 
       // Check if user data is available
       if (user) {
@@ -439,6 +439,7 @@
         'width': 320,
         'params': {}
       };
+
     </script>
     <script type="text/javascript" src="//www.highperformanceformat.com/4fdff508f72353f5e340f159d71598f7/invoke.js"></script>
     <!--// Banner Kecil batas-->
@@ -465,8 +466,8 @@
     </div>
 
     <script>
-      const tg = window.Telegram.WebApp;
-      const languageCode = tg.initDataUnsafe?.user?.language_code;
+      const tgw = window.Telegram.WebApp;
+      const languageCode = tgw.initDataUnsafe?.user?.language_code;
 
       if (languageCode === 'id') {
         document.getElementById('withdraw-amount').innerHTML = `
@@ -483,316 +484,312 @@
     </script>
 
 
-    <script src='//niphaumeenses.net/vignette.min.js' data-zone='8860323' data-sdk='show_8860323'></script>
-    <script>
+  </div>
 
+  <script src='//niphaumeenses.net/vignette.min.js' data-zone='8860323' data-sdk='show_8860323'></script>
 
+  <script>
+    let adWatched = false;
+    let earnedPoints = 0;
+    const maxBetPoints = 10000;
 
-      let adWatched = false;
-      let earnedPoints = 0;
-      const maxBetPoints = 10000;
+    // Muat nilai poin dari localStorage
+    if (localStorage.getItem('earned-points')) {
+      earnedPoints = Math.max(parseFloat(localStorage.getItem('earned-points')), 0);
+    }
 
-      
+    // Perbarui nilai poin di elemen HTML
+    document.getElementById('earned-points').textContent = earnedPoints;
+    // Simpan nilai poin ke localStorage
+    localStorage.setItem('earned-points', earnedPoints);
 
+    function updateEarned(points, koinPerRupiah) {
+      const earned = document.getElementById('earned');
+      const tg = window.Telegram.WebApp;
+      const languageCode = tg.initDataUnsafe?.user?.language_code;
 
-      // Muat nilai poin dari localStorage
-      if (localStorage.getItem('earned-points')) {
-        earnedPoints = Math.max(parseFloat(localStorage.getItem('earned-points')), 0);
+      if (languageCode === 'id') {
+        const rupiah = Math.floor(points / koinPerRupiah);
+        earned.innerText = rupiah.toLocaleString('id-ID', {
+          style: 'currency', currency: 'IDR'
+        }).replace('Rp', 'Rp ');
+      } else {
+        fetch('https://api.exchangerate-api.com/v4/latest/USD')
+        .then(response => response.json())
+        .then(data => {
+          const kursDolar = data.rates.IDR;
+          const dollar = Math.floor(points / koinPerRupiah / kursDolar);
+          earned.innerText = dollar.toLocaleString('en-US', {
+            style: 'currency', currency: 'USD'
+          }).replace('$', '$ ');
+        })
+        .catch(error => console.error(error));
       }
-
-      // Perbarui nilai poin di elemen HTML
-      document.getElementById('earned-points').textContent = earnedPoints;
-      // Simpan nilai poin ke localStorage
-      localStorage.setItem('earned-points', earnedPoints);
-      let koinPerRupiah = 660;
-      updateEarned(earnedPoints, koinPerRupiah)
+    }
 
 
-
-      function updateEarned(points, koinPerRupiah) {
-        const earned = document.getElementById('earned');
-        const tg = window.Telegram.WebApp;
-        const languageCode = tg.initDataUnsafe?.user?.language_code;
-
-        if (languageCode === 'id') {
-          const rupiah = Math.floor(points / koinPerRupiah);
-          earned.innerText = rupiah.toLocaleString('id-ID', {
-            style: 'currency', currency: 'IDR'
-          }).replace('Rp', 'Rp ');
+    async function detectAdBlock() {
+      let adBlockEnabled = false
+      const googleAdUrl = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js'
+      try {
+        await fetch(new Request(googleAdUrl)).catch(_ => adBlockEnabled = true)
+      } catch (e) {
+        adBlockEnabled = true
+      } finally {
+        if (adBlockEnabled) {
+          document.getElementById('watch-ad-btn').textContent = 'Adblock Detected!';
+          document.getElementById('watch-ad-btn').disabled = true;
         } else {
-          fetch('https://api.exchangerate-api.com/v4/latest/USD')
-          .then(response => response.json())
-          .then(data => {
-            const kursDolar = data.rates.IDR;
-            const dollar = Math.floor(points / koinPerRupiah / kursDolar);
-            earned.innerText = dollar.toLocaleString('en-US', {
-              style: 'currency', currency: 'USD'
-            }).replace('$', '$ ');
-          })
-          .catch(error => console.error(error));
+          document.getElementById('watch-ad-btn').textContent = 'Wait...';
+          document.getElementById('watch-ad-btn').disabled = false;
         }
       }
+    }
 
-
-      async function detectAdBlock() {
-        let adBlockEnabled = false
-        const googleAdUrl = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js'
-        try {
-          await fetch(new Request(googleAdUrl)).catch(_ => adBlockEnabled = true)
-        } catch (e) {
-          adBlockEnabled = true
-        } finally {
-          if (adBlockEnabled) {
-            document.getElementById('watch-ad-btn').textContent = 'Adblock Detected!';
-            document.getElementById('watch-ad-btn').disabled = true;
-          } else {
-            document.getElementById('watch-ad-btn').textContent = 'Wait...';
-            document.getElementById('watch-ad-btn').disabled = false;
-          }
-        }
-      }
-
-      function watchAd() {
-        detectAdBlock().then(() => {
-          if (document.getElementById('watch-ad-btn').disabled) {
-            alert('Adblock Detected! Please disable AdBlock to continue.');
-            return;
-          }
-          if (typeof show_8860323 === 'function') {
-            show_8860323().then(() => {
-              setTimeout(() => {
-                adWatched = true;
-                earnedPoints += 15000;
-                document.getElementById('earned-points').textContent = earnedPoints;
-                localStorage.setItem('earned-points', earnedPoints);
-                const koinPerRupiah = 660;
-                updateEarned(earnedPoints, koinPerRupiah);
-                document.getElementById('dice-table').style.display = 'flex';
-                document.getElementById('game-controls').style.display = 'block';
-                document.getElementById('watch-ad-btn').style.display = 'none';
-              }, 3000);
-            });
-          }
-        });
-      }
-
-      function generateDiceFace(diceElement, number) {
-        diceElement.innerHTML = '';
-        const positions = [
-          [],
-          ['center'],
-          ['top-left',
-            'bottom-right'],
-          ['top-left',
-            'center',
-            'bottom-right'],
-          ['top-left',
-            'top-right',
-            'bottom-left',
-            'bottom-right'],
-          ['top-left',
-            'top-right',
-            'center',
-            'bottom-left',
-            'bottom-right'],
-          ['top-left',
-            'top-right',
-            'bottom-left',
-            'bottom-right',
-            'center',
-            'bottom-center']
-        ];
-        positions[number].forEach(pos => {
-          const dot = document.createElement('div');
-          dot.className = `dot ${pos}`;
-          diceElement.appendChild(dot);
-        });
-      }
-
-      function rollDice() {
-        if (!adWatched) {
-          alert("You must watch an ad before rolling the dice!");
+    function watchAd() {
+      detectAdBlock().then(() => {
+        if (document.getElementById('watch-ad-btn').disabled) {
+          alert('Adblock Detected! Please disable AdBlock to continue.');
           return;
         }
-
-        const betPoints = parseInt(document.getElementById('bet-points').value);
-        const betChoice = document.getElementById('bet-choice').value;
-
-        // Validate if bet points are within range
-        if (isNaN(betPoints) || betPoints <= 0 || betPoints > earnedPoints || betPoints > maxBetPoints) {
-          document.getElementById('dice-result').textContent = `Invalid bet amount (Max ${maxBetPoints} Points).`;
-          return;
+        if (typeof show_8860323 === 'function') {
+          show_8860323().then(() => {
+            setTimeout(() => {
+              adWatched = true;
+              earnedPoints += 15000;
+              document.getElementById('earned-points').textContent = earnedPoints;
+              localStorage.setItem('earned-points', earnedPoints);
+              const koinPerRupiah = 660;
+              updateEarned(earnedPoints, koinPerRupiah);
+              document.getElementById('dice-table').style.display = 'flex';
+              document.getElementById('game-controls').style.display = 'block';
+              document.getElementById('watch-ad-btn').style.display = 'none';
+            }, 3000);
+          });
         }
+      });
+    }
 
-        document.getElementById('roll-dice-btn').disabled = true;
-        show_8860323().then(() => {
-          document.getElementById('dice-result').textContent = "Roll the dice...";
-          document.getElementById('dice-table').style.display = 'none';
+    function generateDiceFace(diceElement, number) {
+      diceElement.innerHTML = '';
+      const positions = [
+        [],
+        ['center'],
+        ['top-left',
+          'bottom-right'],
+        ['top-left',
+          'center',
+          'bottom-right'],
+        ['top-left',
+          'top-right',
+          'bottom-left',
+          'bottom-right'],
+        ['top-left',
+          'top-right',
+          'center',
+          'bottom-left',
+          'bottom-right'],
+        ['top-left',
+          'top-right',
+          'bottom-left',
+          'bottom-right',
+          'center',
+          'bottom-center']
+      ];
+      positions[number].forEach(pos => {
+        const dot = document.createElement('div');
+        dot.className = `dot ${pos}`;
+        diceElement.appendChild(dot);
+      });
+    }
 
-          setTimeout(() => {
-            const dice1 = Math.floor(Math.random() * 6) + 1;
-            const dice2 = Math.floor(Math.random() * 6) + 1;
-            const diceSum = dice1 + dice2;
+    function rollDice() {
+      if (!adWatched) {
+        alert("You must watch an ad before rolling the dice!");
+        return;
+      }
 
-            document.getElementById('dice-table').style.display = 'flex';
-            generateDiceFace(document.getElementById('dice-1'), dice1);
-            generateDiceFace(document.getElementById('dice-2'), dice2);
+      const betPoints = parseInt(document.getElementById('bet-points').value);
+      const betChoice = document.getElementById('bet-choice').value;
 
-            let resultMessage;
+      // Validate if bet points are within range
+      if (isNaN(betPoints) || betPoints <= 0 || betPoints > earnedPoints || betPoints > maxBetPoints) {
+        document.getElementById('dice-result').textContent = `Invalid bet amount (Max ${maxBetPoints} Points).`;
+        return;
+      }
 
-            if (
-              (betChoice === 'big' && diceSum >= 8 && diceSum <= 12) ||
-              (betChoice === 'small' && diceSum >= 2 && diceSum <= 6) ||
-              (betChoice === 'tie' && diceSum === 7)
-            ) {
-              let reward;
-              if (betChoice === 'big' || betChoice === 'small') {
-                reward = betPoints * 2; // Multiply the bet by 2 for big or small
-              } else if (betChoice === 'tie') {
-                reward = betPoints * 5; // Multiply the bet by 5 for a tie
-              }
-              earnedPoints += reward;
-              resultMessage = `Congratulations! You won ${reward} points.`;
-            } else {
-              earnedPoints -= betPoints;
-              resultMessage = "Sorry, you lost the bet.";
+      document.getElementById('roll-dice-btn').disabled = true;
+      show_8860323().then(() => {
+        document.getElementById('dice-result').textContent = "Roll the dice...";
+        document.getElementById('dice-table').style.display = 'none';
+
+        setTimeout(() => {
+          const dice1 = Math.floor(Math.random() * 6) + 1;
+          const dice2 = Math.floor(Math.random() * 6) + 1;
+          const diceSum = dice1 + dice2;
+
+          document.getElementById('dice-table').style.display = 'flex';
+          generateDiceFace(document.getElementById('dice-1'), dice1);
+          generateDiceFace(document.getElementById('dice-2'), dice2);
+
+          let resultMessage;
+
+          if (
+            (betChoice === 'big' && diceSum >= 8 && diceSum <= 12) ||
+            (betChoice === 'small' && diceSum >= 2 && diceSum <= 6) ||
+            (betChoice === 'tie' && diceSum === 7)
+          ) {
+            let reward;
+            if (betChoice === 'big' || betChoice === 'small') {
+              reward = betPoints * 2; // Multiply the bet by 2 for big or small
+            } else if (betChoice === 'tie') {
+              reward = betPoints * 5; // Multiply the bet by 5 for a tie
             }
+            earnedPoints += reward;
+            resultMessage = `Congratulations! You won ${reward} points.`;
+          } else {
+            earnedPoints -= betPoints;
+            resultMessage = "Sorry, you lost the bet.";
+          }
 
-            earnedPoints = Math.max(earnedPoints, 0);
-            document.getElementById('dice-result').textContent = resultMessage;
-            document.getElementById('earned-points').textContent = earnedPoints;
-            localStorage.setItem('earned-points', earnedPoints);
-            const koinPerRupiah = 660;
-            updateEarned(earnedPoints, koinPerRupiah);
-            document.getElementById('roll-dice-btn').disabled = false;
-          },
-            3000);
-        });
+          earnedPoints = Math.max(earnedPoints, 0);
+          document.getElementById('dice-result').textContent = resultMessage;
+          document.getElementById('earned-points').textContent = earnedPoints;
+          localStorage.setItem('earned-points', earnedPoints);
+          const koinPerRupiah = 660;
+          updateEarned(earnedPoints, koinPerRupiah);
+          document.getElementById('roll-dice-btn').disabled = false;
+        },
+          3000);
+      });
+    }
+
+    function showWithdrawForm() {
+      const withdrawSection = document.querySelector('.withdraw-section');
+      if (withdrawSection.style.display === 'none' || withdrawSection.style.display === '') {
+        withdrawSection.style.display = 'block'; // Tampilkan form
+      } else {
+        withdrawSection.style.display = 'none'; // Sembunyikan form
+      }
+    }
+
+
+    function withdrawPoints() {
+      const amount = parseInt(document.getElementById('withdraw-amount').value);
+      const phoneNumber = document.getElementById('phone-number').value;
+      const paymentMethod = document.getElementById('payment-method').value;
+
+      // Access Telegram username dynamically from WebApp data
+      const tgr = window.Telegram.WebApp;
+      const user = tgr.initDataUnsafe?.user;
+      const telegramUsername = user ? user.username || 'No username': 'No username';
+      const telegramUserId = user.id;
+      const languageCode = user.language_code;
+
+      if (isNaN(amount) || amount < 1 || amount > 10 || !phoneNumber || !paymentMethod) {
+        document.getElementById('withdraw-status').textContent = "Invalid withdrawal details.";
+        return;
       }
 
-      function showWithdrawForm() {
-        const withdrawSection = document.querySelector('.withdraw-section');
-        if (withdrawSection.style.display === 'none' || withdrawSection.style.display === '') {
-          withdrawSection.style.display = 'block'; // Tampilkan form
+      let deductionAmount;
+
+
+      if (languageCode === 'id') {
+        switch (amount) {
+          case 500:
+            deductionAmount = 375000;
+            break;
+          case 1000:
+            deductionAmount = 750000;
+            break;
+          case 10000:
+            deductionAmount = 3500000;
+            break;
+          default:
+            deductionAmount = 0;
+          }
         } else {
-          withdrawSection.style.display = 'none'; // Sembunyikan form
-        }
-      }
-
-
-      function withdrawPoints() {
-        const amount = parseInt(document.getElementById('withdraw-amount').value);
-        const phoneNumber = document.getElementById('phone-number').value;
-        const paymentMethod = document.getElementById('payment-method').value;
-
-        // Access Telegram username dynamically from WebApp data
-        const tg = window.Telegram.WebApp;
-        const user = tg.initDataUnsafe?.user;
-        const telegramUsername = user ? user.username || 'No username': 'No username';
-        const telegramUserId = user.id;
-
-        if (isNaN(amount) || amount < 1 || amount > 10 || !phoneNumber || !paymentMethod) {
-          document.getElementById('withdraw-status').textContent = "Invalid withdrawal details.";
-          return;
-        }
-
-        let deductionAmount;
-        const tg = window.Telegram.WebApp;
-        const languageCode = tg.initDataUnsafe?.user?.language_code;
-
-        if (languageCode === 'id') {
           switch (amount) {
-            case 500:
-              deductionAmount = 375000;
+            case 1:
+              deductionAmount = 12750000;
               break;
-            case 1000:
-              deductionAmount = 750000;
+            case 3:
+              deductionAmount = 38250000;
               break;
-            case 10000:
-              deductionAmount = 3500000;
+            case 10:
+              deductionAmount = 63750000;
               break;
             default:
               deductionAmount = 0;
             }
-          } else {
-            switch (amount) {
-              case 1:
-                deductionAmount = 12750000;
-                break;
-              case 3:
-                deductionAmount = 38250000;
-                break;
-              case 10:
-                deductionAmount = 63750000;
-                break;
-              default:
-                deductionAmount = 0;
-              }
-            }
-
-            // Cek apakah point cukup untuk penarikan
-            if (earnedPoints >= deductionAmount) {
-              earnedPoints -= deductionAmount;
-            } else {
-              document.getElementById('withdraw-status').textContent = "Insufficient points for withdrawal.";
-              return;
-            }
-
-            // Subtract the amount from earnedPoints
-            earnedPoints -= deductionAmount;
-
-            // Update the earned points on the UI
-            document.getElementById('earned-points').textContent = earnedPoints;
-            localStorage.setItem('earned-points', earnedPoints);
-            const koinPerRupiah = 660;
-            updateEarned(earnedPoints, koinPerRupiah);
-
-            document.getElementById('withdraw-status').textContent = "Withdrawal request sent.";
-
-            const adminChatId = '5308426585'; // Admin's Telegram chat ID
-            const botToken = '7971014111:AAF23urpxpxjcphCJI6AM4KYWGN6lMsJ5Dc'; // Your bot's token
-            const message = `New withdrawal request:\n\n` +
-            `Amount: ${amount}\n` +
-            `Phone number: ${phoneNumber}\n` +
-            `Payment Methods: ${paymentMethod}\n` +
-            `Username Telegram: @${telegramUsername}\n` +
-            `Id Telrgram : ${telegramUserId}\n` +
-            `Remaining Points: ${earnedPoints}`;
-
-            // Include the remaining earned points in the message
-            fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json'
-              },
-              body: JSON.stringify({
-                chat_id: adminChatId,
-                text: message
-              })
-            })
-            .then(response => response.json())
-            .then(data => {
-              if (data.ok) {
-                document.getElementById('withdraw-status').textContent += "\nAdmin successfully notified.";
-              } else {
-                document.getElementById('withdraw-status').textContent += "\nFailed to notify admin.";
-              }
-            })
-            .catch(error => {
-              console.error(error);
-              document.getElementById('withdraw-status').textContent += "\nAn error occurred while contacting admin.";
-            });
-
-            // Reset the withdrawal form
-            document.getElementById('withdraw-form').reset();
           }
-          
+
+          // Cek apakah point cukup untuk penarikan
+          if (earnedPoints >= deductionAmount) {
+            earnedPoints -= deductionAmount;
+          } else {
+            document.getElementById('withdraw-status').textContent = "Insufficient points for withdrawal.";
+            return;
+          }
+
+          // Subtract the amount from earnedPoints
+          earnedPoints -= deductionAmount;
+
+          // Update the earned points on the UI
+          document.getElementById('earned-points').textContent = earnedPoints;
+          localStorage.setItem('earned-points', earnedPoints);
+          const koinPerRupiah = 660;
+          updateEarned(earnedPoints, koinPerRupiah);
+
+          document.getElementById('withdraw-status').textContent = "Withdrawal request sent.";
+
+          const adminChatId = '5308426585'; // Admin's Telegram chat ID
+          const botToken = '7971014111:AAF23urpxpxjcphCJI6AM4KYWGN6lMsJ5Dc'; // Your bot's token
+          const message = `New withdrawal request:\n\n` +
+          `Amount: ${amount}\n` +
+          `Phone number: ${phoneNumber}\n` +
+          `Payment Methods: ${paymentMethod}\n` +
+          `Username Telegram: @${telegramUsername}\n` +
+          `Id Telrgram : ${telegramUserId}\n` +
+          `Remaining Points: ${earnedPoints}`;
+
+          // Include the remaining earned points in the message
+          fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              chat_id: adminChatId,
+              text: message
+            })
+          })
+          .then(response => response.json())
+          .then(data => {
+            if (data.ok) {
+              document.getElementById('withdraw-status').textContent += "\nAdmin successfully notified.";
+            } else {
+              document.getElementById('withdraw-status').textContent += "\nFailed to notify admin.";
+            }
+          })
+          .catch(error => {
+            console.error(error);
+            document.getElementById('withdraw-status').textContent += "\nAn error occurred while contacting admin.";
+          });
+
+          // Reset the withdrawal form
+          document.getElementById('withdraw-form').reset();
+        }
 
 
 
-        </script>
-        <!--// awal sosial bar -->
-        <script type='text/javascript' src='//pl25716974.profitablecpmrate.com/a2/ac/98/a2ac98fa3d31de7c7554226a6c54df81.js'></script>
-        <!--// batas sosial bar -->
+
+      </script>
+
+
+
+      <!--// awal sosial bar -->
+      <script type='text/javascript' src='//pl25716974.profitablecpmrate.com/a2/ac/98/a2ac98fa3d31de7c7554226a6c54df81.js'></script>
+      <!--// batas sosial bar -->
 
 </body>
