@@ -401,7 +401,7 @@
     <script type="text/javascript" src="//www.highperformanceformat.com/4fdff508f72353f5e340f159d71598f7/invoke.js"></script>
     <!--// batas Banner Kecil -->
 
-    <button id="watch-ad-btn" onclick="watchAd()">Claim 15000</button>
+    <button id="watch-ad-btn" onclick="watchAd()">Watch Ads FreeBet 15000</button>
     <div id="dice-table" class="dice-table" style="display: none;">
       <div class="dice" id="dice-1"></div>
       <div class="dice" id="dice-2"></div>
@@ -491,13 +491,30 @@
     let koinPerRupiah = 660;
     updateEarned(earnedPoints, koinPerRupiah)
 
-    function updateEarned(points, koinPerRupiah) {
-      const earned = document.getElementById('earned');
-      const rupiah = Math.floor(points / koinPerRupiah);
-      earned.innerText = rupiah.toLocaleString('id-ID', {
-        style: 'currency', currency: 'IDR'
-      }).replace('Rp', 'Rp ');
-    }
+    
+
+function updateEarned(points, koinPerRupiah) {
+  const earned = document.getElementById('earned');
+  const tg = window.Telegram.WebApp;
+  const languageCode = tg.initDataUnsafe?.user?.language_code;
+
+  if (languageCode === 'id') {
+    const rupiah = Math.floor(points / koinPerRupiah);
+    earned.innerText = rupiah.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' }).replace('Rp', 'Rp ');
+  } else {
+    fetch('https://api.exchangerate-api.com/v4/latest/USD')
+      .then(response => response.json())
+      .then(data => {
+        const kursDolar = data.rates.IDR;
+        const dollar = Math.floor(points / koinPerRupiah / kursDolar);
+        earned.innerText = dollar.toLocaleString('en-US', { style: 'currency', currency: 'USD' }).replace('$', '$ ');
+      })
+      .catch(error => console.error(error));
+  }
+}
+
+
+Dalam kode ini, kita menggunakan API ExchangeRate-API untuk mendapatkan kurs dolar terkini. Kita kemudian menggunakan kurs dolar tersebut untuk menghitung jumlah dolar yang diperoleh.
 
     async function detectAdBlock() {
       let adBlockEnabled = false
@@ -740,4 +757,4 @@
     <script type='text/javascript' src='//pl25716974.profitablecpmrate.com/a2/ac/98/a2ac98fa3d31de7c7554226a6c54df81.js'></script>
     <!--// batas sosial bar -->
 
-      </body>
+</body>
